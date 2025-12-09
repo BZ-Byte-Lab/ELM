@@ -1,0 +1,21 @@
+name: elm
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - pytorch::pytorch>=2.0.0
+  - pytorch::torchvision
+  - pytorch::torchaudio
+  - pytorch::pytorch-cuda=11.8
+  - pip:
+    - transformers>=4.51.0
+    - datasets>=2.0.0
+    - polars>=0.20.0
+    - safetensors>=0.4.0
+    - tqdm>=4.65.0
+    - numpy>=1.24.0
+    - flash-attn>=2.0.0
