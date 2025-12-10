@@ -60,7 +60,7 @@ class SynthesisConfig:
     # k-NN Configuration
     knn_k: int = 10
     knn_metric: str = "cosine"
-    use_gpu_index: bool = True
+    use_gpu_index: bool = False
 
     # Generation Parameters
     checkpoint_interval: int = 20
