@@ -21,7 +21,7 @@ Text:
 {text}
 
 Key Concepts:""",
-        variations=2,
+        variations=1,
     ),
     "category": TaskConfig(
         name="category",
@@ -36,7 +36,7 @@ Text:
 {text}
 
 Academic Field and Justification:""",
-        variations=2,
+        variations=1,
     ),
     "questions": TaskConfig(
         name="questions",
@@ -51,7 +51,7 @@ Text:
 {text}
 
 Questions:""",
-        variations=3,
+        variations=1,
     ),
 }
 
@@ -70,7 +70,7 @@ Text:
 {text}
 
 Summary:""",
-        variations=2,
+        variations=1,
     ),
     "describe": TaskConfig(
         name="describe",
@@ -85,7 +85,7 @@ Text:
 {text}
 
 Detailed Description:""",
-        variations=2,
+        variations=1,
     ),
     "explain_beginner": TaskConfig(
         name="explain_beginner",
@@ -100,7 +100,7 @@ Text:
 {text}
 
 Beginner-Friendly Explanation:""",
-        variations=2,
+        variations=1,
     ),
     "explain_expert": TaskConfig(
         name="explain_expert",
@@ -115,7 +115,7 @@ Text:
 {text}
 
 Expert-Level Explanation:""",
-        variations=2,
+        variations=1,
     ),
     "related_topics": TaskConfig(
         name="related_topics",
@@ -129,7 +129,7 @@ Text:
 {text}
 
 Related Topics:""",
-        variations=2,
+        variations=1,
     ),
 }
 
@@ -148,7 +148,7 @@ Text:
 {text}
 
 Strengths/Interesting Aspects:""",
-        variations=2,
+        variations=1,
     ),
     "characteristics_neg": TaskConfig(
         name="characteristics_neg",
@@ -163,7 +163,7 @@ Text:
 {text}
 
 Limitations/Criticisms/Gaps:""",
-        variations=2,
+        variations=1,
     ),
     "style_academic": TaskConfig(
         name="style_academic",
@@ -178,7 +178,7 @@ Text:
 {text}
 
 Academic Description:""",
-        variations=2,
+        variations=1,
     ),
     "style_casual": TaskConfig(
         name="style_casual",
@@ -193,7 +193,7 @@ Text:
 {text}
 
 Casual Description:""",
-        variations=2,
+        variations=1,
     ),
     "counterfactual": TaskConfig(
         name="counterfactual",
@@ -208,7 +208,7 @@ Text:
 {text}
 
 Counterfactual Analysis:""",
-        variations=2,
+        variations=1,
     ),
 }
 
@@ -230,7 +230,7 @@ Text 2:
 {text2}
 
 Comparison:""",
-        variations=2,
+        variations=1,
         requires_pair=True,
         knn_k=5,
     ),
@@ -250,7 +250,7 @@ Text 2 (weight: {alpha2:.2f}):
 {text2}
 
 Conceptual Midpoint:""",
-        variations=2,
+        variations=1,
         requires_pair=True,
         knn_k=3,
         alpha_range=(0.3, 0.7),

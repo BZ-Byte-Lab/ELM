@@ -21,6 +21,7 @@ from .api_client import OpenRouterClient
 from .quality_filter import QualityFilter
 from .checkpoint import CheckpointManager
 from .output_writer import OutputWriter, SynthesisOutput
+from .profiler import PerformanceProfiler
 from .utils import get_logger
 
 logger = get_logger("generator")
@@ -40,6 +41,9 @@ class SynthesisGenerator:
         self.api_client = OpenRouterClient(config)
         self.quality_filter = QualityFilter(config.repetition_threshold)
         self.checkpoint_manager = CheckpointManager(config)
+        self.profiler = PerformanceProfiler(
+            enabled=getattr(config, 'enable_profiling', True)
+        )
 
         # Initialize k-NN index (built lazily)
         self.knn_index: Optional[KNNIndex] = None
@@ -207,7 +211,10 @@ class SynthesisGenerator:
             stats["total_rejected"] += task_stats["rejected"]
 
         # Flush remaining outputs
-        writer.close()
+        await writer.close()
+
+        # Print profiler summary
+        await self.profiler.print_summary()
 
         # Check coverage requirement
         stats["coverage"] = self._calculate_coverage(coverage)
@@ -333,7 +340,7 @@ class SynthesisGenerator:
         coverage: Dict[int, set],
         split: str,
     ) -> Dict[str, int]:
-        """Process a single-text task across all embeddings (async with batching).
+        """Process a single-text task across all embeddings (async with concurrent batches).
 
         Args:
             dataset: ELMDataset instance
@@ -351,113 +358,163 @@ class SynthesisGenerator:
         checkpoint = self.checkpoint_manager.load_checkpoint(split, task_config.name)
         completed_indices = checkpoint.completed_indices if checkpoint else set()
 
-        generated = 0
-        rejected = 0
-
         indices_to_process = [i for i in range(len(dataset)) if i not in completed_indices]
         batch_size = self.config.batch_size
-
-        # Process in batches
         total_batches = (len(indices_to_process) + batch_size - 1) // batch_size
 
-        with tqdm(total=len(indices_to_process), desc=f"{task_config.name}") as pbar:
-            for batch_num in range(total_batches):
-                batch_start = batch_num * batch_size
-                batch_end = min(batch_start + batch_size, len(indices_to_process))
-                batch_indices = indices_to_process[batch_start:batch_end]
+        # Setup for concurrent batch processing
+        max_concurrent_batches = getattr(self.config, 'max_concurrent_batches', 3)
+        batch_semaphore = asyncio.Semaphore(max_concurrent_batches)
 
-                # Prepare all prompts for this batch
-                batch_prompts = []
-                batch_metadata = []
+        # Shared state with lock for thread-safety
+        shared_state = {
+            'generated': 0,
+            'rejected': 0,
+            'lock': asyncio.Lock(),
+            'completed_indices': completed_indices,
+        }
 
-                for idx in batch_indices:
-                    sample = dataset[idx]
-                    text = sample["text"]
+        # Progress bar (will be updated with lock)
+        pbar = tqdm(total=len(indices_to_process), desc=f"{task_config.name}")
 
-                    for var in range(task_config.variations):
-                        # Prepare prompt
-                        if task_config.name == "counterfactual":
-                            random_domain = random.choice(COUNTERFACTUAL_DOMAINS)
-                            prompt = task_config.prompt_template.format(
-                                text=text, random_domain=random_domain
+        async def process_batch(batch_num: int, batch_indices: List[int]):
+            """Process a single batch of indices."""
+            async with batch_semaphore:
+                # Measure batch processing time
+                async with self.profiler.measure(f"batch_{task_config.name}"):
+                    # Prepare all prompts for this batch
+                    batch_prompts = []
+                    batch_metadata = []
+
+                    for idx in batch_indices:
+                        sample = dataset[idx]
+                        text = sample["text"]
+
+                        for var in range(task_config.variations):
+                            # Prepare prompt
+                            if task_config.name == "counterfactual":
+                                random_domain = random.choice(COUNTERFACTUAL_DOMAINS)
+                                prompt = task_config.prompt_template.format(
+                                    text=text, random_domain=random_domain
+                                )
+                            else:
+                                prompt = task_config.prompt_template.format(text=text)
+
+                            batch_prompts.append(prompt)
+                            batch_metadata.append((idx, var, text))
+
+                    # Generate all prompts in parallel
+                    async with self.profiler.measure(f"api_call_{task_config.name}"):
+                        results = await self.api_client.generate_batch_async(
+                            batch_prompts,
+                            task_config,
+                        )
+
+                    # Process results (local counters for this batch)
+                    outputs_to_write = []
+                    local_generated = 0
+                    local_rejected = 0
+
+                    for result, (idx, var, original_text) in zip(results, batch_metadata):
+                        if not result.success:
+                            local_rejected += 1
+                            continue
+
+                        # Quality filter
+                        async with self.profiler.measure(f"quality_filter_{task_config.name}"):
+                            is_valid, reason = self.quality_filter.filter(
+                                result.text, task_config, original_text
                             )
-                        else:
-                            prompt = task_config.prompt_template.format(text=text)
 
-                        batch_prompts.append(prompt)
-                        batch_metadata.append((idx, var, text))
+                        if not is_valid:
+                            local_rejected += 1
+                            logger.debug(f"Rejected: {reason}")
+                            continue
 
-                # Generate all prompts in parallel (10 concurrent via semaphore)
-                results = await self.api_client.generate_batch_async(
-                    batch_prompts,
-                    task_config,
-                )
+                        # Check for duplicate
+                        async with self.profiler.measure(f"duplicate_check_{task_config.name}"):
+                            is_duplicate = await self.checkpoint_manager.is_duplicate(result.text)
 
-                # Process results
-                outputs_to_write = []
+                        if is_duplicate:
+                            local_rejected += 1
+                            continue
 
-                for result, (idx, var, original_text) in zip(results, batch_metadata):
-                    if not result.success:
-                        rejected += 1
-                        continue
+                        # Prepare output
+                        output = SynthesisOutput(
+                            task_type=task_config.name,
+                            input_prompt_template=task_config.prompt_template,
+                            embedding_index=idx,
+                            target_text=result.text,
+                            metadata={
+                                "variation": var,
+                                "temperature": task_config.temperature,
+                                "top_p": task_config.top_p,
+                                "token_count": result.token_count,
+                            },
+                        )
+                        outputs_to_write.append(output)
+                        local_generated += 1
 
-                    # Quality filter
-                    is_valid, reason = self.quality_filter.filter(
-                        result.text, task_config, original_text
-                    )
+                    # Thread-safe updates to shared state
+                    async with shared_state['lock']:
+                        # Write outputs
+                        async with self.profiler.measure(f"io_write_{task_config.name}"):
+                            await writer.write_batch(outputs_to_write)
 
-                    if not is_valid:
-                        rejected += 1
-                        logger.debug(f"Rejected: {reason}")
-                        continue
+                        # Update coverage
+                        for output in outputs_to_write:
+                            coverage[output.embedding_index].add(task_config.name)
 
-                    # Check for duplicate
-                    if self.checkpoint_manager.is_duplicate(result.text):
-                        rejected += 1
-                        continue
+                        # Update counters
+                        shared_state['generated'] += local_generated
+                        shared_state['rejected'] += local_rejected
 
-                    # Prepare output
-                    output = SynthesisOutput(
-                        task_type=task_config.name,
-                        input_prompt_template=task_config.prompt_template,
-                        embedding_index=idx,
-                        target_text=result.text,
-                        metadata={
-                            "variation": var,
-                            "temperature": task_config.temperature,
-                            "top_p": task_config.top_p,
-                            "token_count": result.token_count,
-                        },
-                    )
-                    outputs_to_write.append(output)
-                    generated += 1
-                    coverage[idx].add(task_config.name)
+                        # Update completed indices
+                        for idx in batch_indices:
+                            shared_state['completed_indices'].add(idx)
 
-                # Batch write outputs
-                writer.write_batch(outputs_to_write)
+                        # Checkpoint if needed
+                        if self.checkpoint_manager.should_checkpoint(shared_state['generated']):
+                            async with self.profiler.measure(f"checkpoint_{task_config.name}"):
+                                await self.checkpoint_manager.save_checkpoint(
+                                    split, task_config.name,
+                                    shared_state['completed_indices'],
+                                    shared_state['generated'],
+                                    shared_state['rejected']
+                                )
 
-                # Update completed indices
-                for idx in batch_indices:
-                    completed_indices.add(idx)
+                        # Update progress bar
+                        pbar.update(len(batch_indices))
+                        logger.debug(f"Batch {batch_num + 1}/{total_batches}: "
+                                   f"{shared_state['generated']} generated, "
+                                   f"{shared_state['rejected']} rejected")
 
-                # Checkpoint after each batch
-                if self.checkpoint_manager.should_checkpoint(generated):
-                    self.checkpoint_manager.save_checkpoint(
-                        split, task_config.name, completed_indices,
-                        generated, rejected
-                    )
+        # Create batch tasks
+        batch_tasks = []
+        for batch_num in range(total_batches):
+            batch_start = batch_num * batch_size
+            batch_end = min(batch_start + batch_size, len(indices_to_process))
+            batch_indices = indices_to_process[batch_start:batch_end]
+            batch_tasks.append(process_batch(batch_num, batch_indices))
 
-                # Update progress
-                pbar.update(len(batch_indices))
-                logger.debug(f"Batch {batch_num + 1}/{total_batches}: "
-                           f"{generated} generated, {rejected} rejected")
+        # Process all batches concurrently!
+        await asyncio.gather(*batch_tasks)
+
+        pbar.close()
 
         # Final checkpoint
-        self.checkpoint_manager.save_checkpoint(
-            split, task_config.name, completed_indices, generated, rejected
-        )
+        async with self.profiler.measure(f"checkpoint_{task_config.name}"):
+            await self.checkpoint_manager.save_checkpoint(
+                split, task_config.name,
+                shared_state['completed_indices'],
+                shared_state['generated'],
+                shared_state['rejected']
+            )
 
-        return {"generated": generated, "rejected": rejected}
+        return {
+            "generated": shared_state['generated'],
+            "rejected": shared_state['rejected']
+        }
 
     def _process_pair_task(
         self,
@@ -579,7 +636,7 @@ class SynthesisGenerator:
         coverage: Dict[int, set],
         split: str,
     ) -> Dict[str, int]:
-        """Process a pair-based task using k-NN neighbors (async with batching).
+        """Process a pair-based task using k-NN neighbors (async with concurrent batches).
 
         Args:
             dataset: ELMDataset instance
@@ -597,126 +654,178 @@ class SynthesisGenerator:
         checkpoint = self.checkpoint_manager.load_checkpoint(split, task_config.name)
         completed_indices = checkpoint.completed_indices if checkpoint else set()
 
-        generated = 0
-        rejected = 0
-
         indices_to_process = [i for i in range(len(dataset)) if i not in completed_indices]
 
         # Adjust batch size for pair tasks (smaller because more prompts per embedding)
         batch_size = max(1, self.config.batch_size // (task_config.knn_k * task_config.variations))
         total_batches = (len(indices_to_process) + batch_size - 1) // batch_size
 
-        with tqdm(total=len(indices_to_process), desc=f"{task_config.name}") as pbar:
-            for batch_num in range(total_batches):
-                batch_start = batch_num * batch_size
-                batch_end = min(batch_start + batch_size, len(indices_to_process))
-                batch_indices = indices_to_process[batch_start:batch_end]
+        # Setup for concurrent batch processing
+        max_concurrent_batches = getattr(self.config, 'max_concurrent_batches', 3)
+        batch_semaphore = asyncio.Semaphore(max_concurrent_batches)
 
-                # Prepare all prompts for this batch
-                batch_prompts = []
-                batch_metadata = []
+        # Shared state with lock for thread-safety
+        shared_state = {
+            'generated': 0,
+            'rejected': 0,
+            'lock': asyncio.Lock(),
+            'completed_indices': completed_indices,
+        }
 
-                for idx in batch_indices:
-                    sample = dataset[idx]
-                    text1 = sample["text"]
+        # Progress bar (will be updated with lock)
+        pbar = tqdm(total=len(indices_to_process), desc=f"{task_config.name}")
 
-                    # Get k-NN neighbors
-                    neighbor_indices, similarities = self.knn_index.search(idx, task_config.knn_k)
+        async def process_batch(batch_num: int, batch_indices: List[int]):
+            """Process a single batch of indices."""
+            async with batch_semaphore:
+                # Measure batch processing time
+                async with self.profiler.measure(f"batch_{task_config.name}"):
+                    # Prepare all prompts for this batch
+                    batch_prompts = []
+                    batch_metadata = []
 
-                    # Generate with each neighbor
-                    for neighbor_idx in neighbor_indices[:task_config.knn_k]:
-                        neighbor_sample = dataset[int(neighbor_idx)]
-                        text2 = neighbor_sample["text"]
+                    for idx in batch_indices:
+                        sample = dataset[idx]
+                        text1 = sample["text"]
 
-                        for var in range(task_config.variations):
-                            # Prepare prompt based on task type
-                            if task_config.name == "hypothetical":
-                                alpha = random.uniform(*task_config.alpha_range)
-                                prompt = task_config.prompt_template.format(
-                                    text1=text1, text2=text2,
-                                    alpha1=1-alpha, alpha2=alpha
+                        # Get k-NN neighbors
+                        neighbor_indices, similarities = self.knn_index.search(idx, task_config.knn_k)
+
+                        # Generate with each neighbor
+                        for neighbor_idx in neighbor_indices[:task_config.knn_k]:
+                            neighbor_sample = dataset[int(neighbor_idx)]
+                            text2 = neighbor_sample["text"]
+
+                            for var in range(task_config.variations):
+                                # Prepare prompt based on task type
+                                if task_config.name == "hypothetical":
+                                    alpha = random.uniform(*task_config.alpha_range)
+                                    prompt = task_config.prompt_template.format(
+                                        text1=text1, text2=text2,
+                                        alpha1=1-alpha, alpha2=alpha
+                                    )
+                                    metadata_extra = {"alpha": alpha, "neighbor_idx": int(neighbor_idx)}
+                                else:  # compare
+                                    prompt = task_config.prompt_template.format(
+                                        text1=text1, text2=text2
+                                    )
+                                    metadata_extra = {"neighbor_idx": int(neighbor_idx)}
+
+                                batch_prompts.append(prompt)
+                                batch_metadata.append((idx, var, text1 + " " + text2, metadata_extra))
+
+                    # Generate all prompts in parallel
+                    async with self.profiler.measure(f"api_call_{task_config.name}"):
+                        results = await self.api_client.generate_batch_async(
+                            batch_prompts,
+                            task_config,
+                        )
+
+                    # Process results (local counters for this batch)
+                    outputs_to_write = []
+                    local_generated = 0
+                    local_rejected = 0
+
+                    for result, (idx, var, combined_text, metadata_extra) in zip(results, batch_metadata):
+                        if not result.success:
+                            local_rejected += 1
+                            continue
+
+                        # Quality filter
+                        async with self.profiler.measure(f"quality_filter_{task_config.name}"):
+                            is_valid, reason = self.quality_filter.filter(
+                                result.text, task_config, combined_text
+                            )
+
+                        if not is_valid:
+                            local_rejected += 1
+                            continue
+
+                        # Check for duplicate
+                        async with self.profiler.measure(f"duplicate_check_{task_config.name}"):
+                            is_duplicate = await self.checkpoint_manager.is_duplicate(result.text)
+
+                        if is_duplicate:
+                            local_rejected += 1
+                            continue
+
+                        # Write output
+                        output = SynthesisOutput(
+                            task_type=task_config.name,
+                            input_prompt_template=task_config.prompt_template,
+                            embedding_index=idx,
+                            target_text=result.text,
+                            metadata={
+                                "variation": var,
+                                "temperature": task_config.temperature,
+                                "top_p": task_config.top_p,
+                                "token_count": result.token_count,
+                                **metadata_extra,
+                            },
+                        )
+                        outputs_to_write.append(output)
+                        local_generated += 1
+
+                    # Thread-safe updates to shared state
+                    async with shared_state['lock']:
+                        # Write outputs
+                        async with self.profiler.measure(f"io_write_{task_config.name}"):
+                            await writer.write_batch(outputs_to_write)
+
+                        # Update coverage
+                        for output in outputs_to_write:
+                            coverage[output.embedding_index].add(task_config.name)
+
+                        # Update counters
+                        shared_state['generated'] += local_generated
+                        shared_state['rejected'] += local_rejected
+
+                        # Update completed indices
+                        for idx in batch_indices:
+                            shared_state['completed_indices'].add(idx)
+
+                        # Checkpoint if needed
+                        if self.checkpoint_manager.should_checkpoint(shared_state['generated']):
+                            async with self.profiler.measure(f"checkpoint_{task_config.name}"):
+                                await self.checkpoint_manager.save_checkpoint(
+                                    split, task_config.name,
+                                    shared_state['completed_indices'],
+                                    shared_state['generated'],
+                                    shared_state['rejected']
                                 )
-                                metadata_extra = {"alpha": alpha, "neighbor_idx": int(neighbor_idx)}
-                            else:  # compare
-                                prompt = task_config.prompt_template.format(
-                                    text1=text1, text2=text2
-                                )
-                                metadata_extra = {"neighbor_idx": int(neighbor_idx)}
 
-                            batch_prompts.append(prompt)
-                            batch_metadata.append((idx, var, text1 + " " + text2, metadata_extra))
+                        # Update progress bar
+                        pbar.update(len(batch_indices))
+                        logger.debug(f"Batch {batch_num + 1}/{total_batches}: "
+                                   f"{shared_state['generated']} generated, "
+                                   f"{shared_state['rejected']} rejected")
 
-                # Generate all prompts in parallel (10 concurrent via semaphore)
-                results = await self.api_client.generate_batch_async(
-                    batch_prompts,
-                    task_config,
-                )
+        # Create batch tasks
+        batch_tasks = []
+        for batch_num in range(total_batches):
+            batch_start = batch_num * batch_size
+            batch_end = min(batch_start + batch_size, len(indices_to_process))
+            batch_indices = indices_to_process[batch_start:batch_end]
+            batch_tasks.append(process_batch(batch_num, batch_indices))
 
-                # Process results
-                outputs_to_write = []
+        # Process all batches concurrently!
+        await asyncio.gather(*batch_tasks)
 
-                for result, (idx, var, combined_text, metadata_extra) in zip(results, batch_metadata):
-                    if not result.success:
-                        rejected += 1
-                        continue
-
-                    # Quality filter
-                    is_valid, reason = self.quality_filter.filter(
-                        result.text, task_config, combined_text
-                    )
-
-                    if not is_valid:
-                        rejected += 1
-                        continue
-
-                    # Check for duplicate
-                    if self.checkpoint_manager.is_duplicate(result.text):
-                        rejected += 1
-                        continue
-
-                    # Write output
-                    output = SynthesisOutput(
-                        task_type=task_config.name,
-                        input_prompt_template=task_config.prompt_template,
-                        embedding_index=idx,
-                        target_text=result.text,
-                        metadata={
-                            "variation": var,
-                            "temperature": task_config.temperature,
-                            "top_p": task_config.top_p,
-                            "token_count": result.token_count,
-                            **metadata_extra,
-                        },
-                    )
-                    outputs_to_write.append(output)
-                    generated += 1
-                    coverage[idx].add(task_config.name)
-
-                # Batch write outputs
-                writer.write_batch(outputs_to_write)
-
-                # Update completed indices
-                for idx in batch_indices:
-                    completed_indices.add(idx)
-
-                # Checkpoint after each batch
-                if self.checkpoint_manager.should_checkpoint(generated):
-                    self.checkpoint_manager.save_checkpoint(
-                        split, task_config.name, completed_indices,
-                        generated, rejected
-                    )
-
-                # Update progress
-                pbar.update(len(batch_indices))
-                logger.debug(f"Batch {batch_num + 1}/{total_batches}: "
-                           f"{generated} generated, {rejected} rejected")
+        pbar.close()
 
         # Final checkpoint
-        self.checkpoint_manager.save_checkpoint(
-            split, task_config.name, completed_indices, generated, rejected
-        )
+        async with self.profiler.measure(f"checkpoint_{task_config.name}"):
+            await self.checkpoint_manager.save_checkpoint(
+                split, task_config.name,
+                shared_state['completed_indices'],
+                shared_state['generated'],
+                shared_state['rejected']
+            )
 
-        return {"generated": generated, "rejected": rejected}
+        return {
+            "generated": shared_state['generated'],
+            "rejected": shared_state['rejected']
+        }
 
     def _calculate_coverage(self, coverage: Dict[int, set]) -> Dict[str, Any]:
         """Calculate coverage statistics.
