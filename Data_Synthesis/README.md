@@ -158,11 +158,11 @@ Each generated output is checked for:
 
 Post-generation validation ensures:
 
-- ✓ Every embedding has ≥15 samples across different tasks
-- ✓ Compare tasks use k-NN pairs (verify neighbor_idx exists)
-- ✓ Hypothetical tasks have α ∈ [0.3, 0.7]
-- ✓ No duplicate outputs (hash check)
-- ✓ Quality rejection rate <20% per task
+- Every embedding has at least 15 samples across different tasks
+- Compare tasks use k-NN pairs (verify neighbor_idx exists)
+- Hypothetical tasks have alpha in [0.3, 0.7]
+- No duplicate outputs (hash check)
+- Quality rejection rate below 20% per task
 
 ## Estimated Output
 
@@ -212,6 +212,28 @@ If a task exceeds 20% rejection rate, check:
 - Increase `requests_per_second` (if API allows)
 - Use GPU-accelerated FAISS: set `use_gpu_index=True` in config
 - Process fewer splits or reduce `variations_per_task`
+
+## Citation
+
+If you use this pipeline, please cite:
+
+**Qwen3-30B-A3B-Instruct:**
+```
+@misc{qwen3-instruct,
+  title={Qwen3},
+  author={Qwen Team},
+  year={2024},
+  url={https://huggingface.co/Qwen/Qwen3-30B-A3B-Instruct}
+}
+```
+
+**OpenRouter:**
+```
+@misc{openrouter,
+  title={OpenRouter},
+  url={https://openrouter.ai}
+}
+```
 
 ## License
 

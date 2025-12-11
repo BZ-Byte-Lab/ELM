@@ -63,6 +63,11 @@ def main():
         default=None,
         help="Path to log file (default: logs/embeddings.log)"
     )
+    parser.add_argument(
+        "--normalize",
+        action="store_true",
+        help="Apply L2 normalization to embeddings"
+    )
 
     args = parser.parse_args()
 
@@ -78,6 +83,8 @@ def main():
         config.use_flash_attention = False
     if args.no_fp16:
         config.use_fp16 = False
+    if args.normalize:
+        config.normalize_embeddings = True
 
     # Set up logging
     log_file = None
@@ -133,7 +140,8 @@ def main():
                 split_name=split_name,
                 config=config,
                 model=model,
-                tokenizer=tokenizer
+                tokenizer=tokenizer,
+                normalize=config.normalize_embeddings
             )
 
             logger.info(f"{split_name} completed in {format_time(time.time() - split_start)}")

@@ -70,6 +70,7 @@ class SynthesisGenerator:
             data_dir=self.config.data_dir,
             split=split,
             load_embeddings=True,
+            use_normalized_embeddings=True,  # Use normalized embeddings for k-NN search
             config=self.data_config,
         )
         logger.info(f"Loaded {len(dataset)} samples")

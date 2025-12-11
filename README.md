@@ -9,7 +9,7 @@ This project is organized into two main components:
 ```
 elm/
 ├── Data_Preparation/    # WikiText-2 preprocessing and embedding generation
-├── Data_Synthesis/      # (Reserved for future synthetic data generation)
+├── Data_Synthesis/      # Synthetic data generation using LLM
 ├── data/                # Output directory for all processed data
 ├── logs/                # Pipeline execution logs
 ├── environment.yml      # Conda environment specification
@@ -41,7 +41,26 @@ python Data_Preparation/scripts/run_pipeline.py
 
 ### Data_Synthesis
 
-Reserved for future development of synthetic data generation capabilities.
+Synthetic data generation pipeline using Qwen3-30B-A3B-Instruct via OpenRouter API.
+
+**Features:**
+- Generate diverse training targets across 16 task types (Factual, Descriptive, Creative, Pair-Based)
+- FAISS k-NN index for efficient neighbor lookup in pair-based tasks
+- OpenRouter API integration with rate limiting and retry logic
+- Checkpointing with automatic resume capability
+- Quality filtering (min tokens, repetition detection, instruction leakage)
+
+**Quick Start:**
+```bash
+# Set API key
+export OPENROUTER_API_KEY="your-key"
+
+# From project root
+python Data_Synthesis/scripts/run_synthesis.py
+```
+
+**Documentation:**
+- See [Data_Synthesis/README.md](Data_Synthesis/README.md) for full documentation
 
 ## Installation
 
@@ -83,6 +102,7 @@ python scripts/run_pipeline.py
 All processed data is stored in the `data/` directory at the project root:
 - `data/wikitext2_processed/` - Preprocessed text files (Parquet format)
 - `data/embeddings/` - Generated embeddings (SafeTensors format)
+- `data/synthesis/` - Synthetic training targets (JSONL format)
 
 All logs are stored in the `logs/` directory at the project root.
 

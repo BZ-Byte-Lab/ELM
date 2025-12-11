@@ -107,6 +107,7 @@ def generate_embeddings_batch(
     tokenizer: AutoTokenizer,
     texts: List[str],
     config: Config,
+    normalize: bool = False,
     desc: str = "Generating embeddings"
 ) -> np.ndarray:
     """Generate embeddings for a list of texts.
@@ -116,6 +117,7 @@ def generate_embeddings_batch(
         tokenizer: Tokenizer
         texts: List of text strings
         config: Configuration object
+        normalize: Whether to apply L2 normalization
         desc: Description for progress bar
 
     Returns:
@@ -152,8 +154,9 @@ def generate_embeddings_batch(
                 batch_dict['attention_mask']
             )
 
-            # Normalize embeddings (L2 norm)
-            embeddings = F.normalize(embeddings, p=2, dim=1)
+            # Optionally normalize embeddings (L2 norm)
+            if normalize:
+                embeddings = F.normalize(embeddings, p=2, dim=1)
 
             # Move to CPU and convert to numpy
             embeddings_np = embeddings.cpu().float().numpy()
@@ -235,7 +238,8 @@ def generate_and_save_embeddings(
     split_name: str,
     config: Config,
     model: AutoModel,
-    tokenizer: AutoTokenizer
+    tokenizer: AutoTokenizer,
+    normalize: bool = False
 ):
     """Generate and save embeddings for a specific split.
 
@@ -244,6 +248,7 @@ def generate_and_save_embeddings(
         config: Configuration object
         model: Embedding model
         tokenizer: Tokenizer
+        normalize: Whether to apply L2 normalization
     """
     # Load texts
     parquet_path = config.get_processed_path(split_name)
@@ -255,6 +260,7 @@ def generate_and_save_embeddings(
         tokenizer=tokenizer,
         texts=texts,
         config=config,
+        normalize=normalize,
         desc=f"Embedding {split_name}"
     )
 

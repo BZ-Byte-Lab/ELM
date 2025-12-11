@@ -232,7 +232,7 @@ Text 2:
 Comparison:""",
         variations=1,
         requires_pair=True,
-        knn_k=5,
+        knn_k=3,
     ),
     "hypothetical": TaskConfig(
         name="hypothetical",
@@ -252,7 +252,7 @@ Text 2 (weight: {alpha2:.2f}):
 Conceptual Midpoint:""",
         variations=1,
         requires_pair=True,
-        knn_k=3,
+        knn_k=2,
         alpha_range=(0.3, 0.7),
     ),
 }

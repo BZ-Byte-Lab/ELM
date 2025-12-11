@@ -27,6 +27,7 @@ class ELMDataset(Dataset):
         data_dir: Path,
         split: str = "train",
         load_embeddings: bool = True,
+        use_normalized_embeddings: bool = False,
         config: Optional[Config] = None
     ):
         """Initialize ELMDataset.
@@ -35,6 +36,7 @@ class ELMDataset(Dataset):
             data_dir: Base directory containing processed data
             split: Dataset split ('train', 'val', or 'test')
             load_embeddings: Whether to load embeddings
+            use_normalized_embeddings: Whether to load L2-normalized embeddings (for k-NN search)
             config: Optional configuration object
         """
         self.split = split
@@ -65,7 +67,10 @@ class ELMDataset(Dataset):
         # Load embeddings if requested
         self.embeddings = None
         if load_embeddings:
-            self.embeddings_path = config.get_embeddings_path(split)
+            if use_normalized_embeddings:
+                self.embeddings_path = config.get_normalized_embeddings_path(split)
+            else:
+                self.embeddings_path = config.get_embeddings_path(split)
             validate_file_exists(self.embeddings_path, f"{split} embeddings file")
 
             logger.info(f"Loading embeddings from {self.embeddings_path}")

@@ -1,0 +1,78 @@
+2025-12-11 01:22:07,877 - data_pipeline - INFO - ================================================================================
+2025-12-11 01:22:07,877 - data_pipeline - INFO - ELM Embedding Generation
+2025-12-11 01:22:07,877 - data_pipeline - INFO - ================================================================================
+2025-12-11 01:22:07,877 - data_pipeline - INFO - 
+Config(
+  data_dir=/home/benz/coding_project/elm/data,
+  model=Qwen/Qwen3-Embedding-4B,
+  tokens=100-2000,
+  split=0.8/0.1/0.1,
+  batch_size=8
+)
+
+2025-12-11 01:22:07,877 - data_pipeline - INFO - Validating processed data files...
+2025-12-11 01:22:07,877 - data_pipeline - INFO -   ✓ train: /home/benz/coding_project/elm/data/wikitext2_processed/train.parquet
+2025-12-11 01:22:07,877 - data_pipeline - INFO -   ✓ val: /home/benz/coding_project/elm/data/wikitext2_processed/val.parquet
+2025-12-11 01:22:07,877 - data_pipeline - INFO -   ✓ test: /home/benz/coding_project/elm/data/wikitext2_processed/test.parquet
+2025-12-11 01:22:07,877 - data_pipeline - INFO - 
+================================================================================
+2025-12-11 01:22:07,877 - data_pipeline - INFO - Loading embedding model
+2025-12-11 01:22:07,877 - data_pipeline - INFO - ================================================================================
+2025-12-11 01:22:07,877 - data_pipeline.embeddings - INFO - Loading embedding model: Qwen/Qwen3-Embedding-4B
+2025-12-11 01:22:08,558 - data_pipeline.embeddings - INFO - Loading model with flash_attention_2...
+2025-12-11 01:22:08,855 - data_pipeline.embeddings - WARNING - Failed to load with flash_attention_2: FlashAttention2 has been toggled on, but it cannot be used due to the following error: the package flash_attn seems to be not installed. Please refer to the documentation of https://huggingface.co/docs/transformers/perf_infer_gpu_one#flashattention-2 to install Flash Attention 2.
+2025-12-11 01:22:08,855 - data_pipeline.embeddings - INFO - Falling back to standard attention...
+2025-12-11 01:22:13,660 - data_pipeline.embeddings - INFO - Model loaded on GPU: NVIDIA GeForce RTX 5070 Ti
+2025-12-11 01:22:13,660 - data_pipeline.embeddings - INFO - Available VRAM: 17.09 GB
+2025-12-11 01:22:13,661 - data_pipeline.embeddings - INFO - Model parameters: 4,021,774,336
+2025-12-11 01:22:13,662 - data_pipeline - INFO - 
+================================================================================
+2025-12-11 01:22:13,662 - data_pipeline - INFO - Generating embeddings
+2025-12-11 01:22:13,662 - data_pipeline - INFO - ================================================================================
+2025-12-11 01:22:13,662 - data_pipeline - INFO - 
+Processing train split...
+2025-12-11 01:22:13,662 - data_pipeline.embeddings - INFO - Loading texts from /home/benz/coding_project/elm/data/wikitext2_processed/train.parquet...
+2025-12-11 01:22:13,701 - data_pipeline.embeddings - INFO - Loaded 4813 texts
+2025-12-11 01:22:13,702 - data_pipeline.embeddings - INFO - Generating embeddings for 4813 texts...
+2025-12-11 01:22:13,702 - data_pipeline.embeddings - INFO - Batch size: 8, Max length: 8192
+2025-12-11 01:32:40,465 - data_pipeline.embeddings - INFO - Generated embeddings shape: (4813, 2560)
+2025-12-11 01:32:40,465 - data_pipeline.embeddings - INFO - Embedding dtype: float32
+2025-12-11 01:32:40,466 - data_pipeline.embeddings - INFO - Saving embeddings to /home/benz/coding_project/elm/data/embeddings/train_embeddings.safetensors...
+2025-12-11 01:32:40,516 - data_pipeline.embeddings - INFO - Embeddings saved successfully
+2025-12-11 01:32:40,516 - data_pipeline.embeddings - INFO - Completed embeddings for train split
+2025-12-11 01:32:40,517 - data_pipeline - INFO - train completed in 10m 27s
+2025-12-11 01:32:40,517 - data_pipeline - INFO - 
+Processing val split...
+2025-12-11 01:32:40,517 - data_pipeline.embeddings - INFO - Loading texts from /home/benz/coding_project/elm/data/wikitext2_processed/val.parquet...
+2025-12-11 01:32:40,532 - data_pipeline.embeddings - INFO - Loaded 601 texts
+2025-12-11 01:32:40,532 - data_pipeline.embeddings - INFO - Generating embeddings for 601 texts...
+2025-12-11 01:32:40,532 - data_pipeline.embeddings - INFO - Batch size: 8, Max length: 8192
+2025-12-11 01:33:55,473 - data_pipeline.embeddings - INFO - Generated embeddings shape: (601, 2560)
+2025-12-11 01:33:55,473 - data_pipeline.embeddings - INFO - Embedding dtype: float32
+2025-12-11 01:33:55,474 - data_pipeline.embeddings - INFO - Saving embeddings to /home/benz/coding_project/elm/data/embeddings/val_embeddings.safetensors...
+2025-12-11 01:33:55,478 - data_pipeline.embeddings - INFO - Embeddings saved successfully
+2025-12-11 01:33:55,479 - data_pipeline.embeddings - INFO - Completed embeddings for val split
+2025-12-11 01:33:55,479 - data_pipeline - INFO - val completed in 1m 15s
+2025-12-11 01:33:55,479 - data_pipeline - INFO - 
+Processing test split...
+2025-12-11 01:33:55,479 - data_pipeline.embeddings - INFO - Loading texts from /home/benz/coding_project/elm/data/wikitext2_processed/test.parquet...
+2025-12-11 01:33:55,484 - data_pipeline.embeddings - INFO - Loaded 603 texts
+2025-12-11 01:33:55,484 - data_pipeline.embeddings - INFO - Generating embeddings for 603 texts...
+2025-12-11 01:33:55,484 - data_pipeline.embeddings - INFO - Batch size: 8, Max length: 8192
+2025-12-11 01:35:18,217 - data_pipeline.embeddings - INFO - Generated embeddings shape: (603, 2560)
+2025-12-11 01:35:18,217 - data_pipeline.embeddings - INFO - Embedding dtype: float32
+2025-12-11 01:35:18,217 - data_pipeline.embeddings - INFO - Saving embeddings to /home/benz/coding_project/elm/data/embeddings/test_embeddings.safetensors...
+2025-12-11 01:35:18,220 - data_pipeline.embeddings - INFO - Embeddings saved successfully
+2025-12-11 01:35:18,220 - data_pipeline.embeddings - INFO - Completed embeddings for test split
+2025-12-11 01:35:18,220 - data_pipeline - INFO - test completed in 1m 23s
+2025-12-11 01:35:18,220 - data_pipeline - INFO - 
+================================================================================
+2025-12-11 01:35:18,220 - data_pipeline - INFO - EMBEDDING GENERATION COMPLETED SUCCESSFULLY
+2025-12-11 01:35:18,220 - data_pipeline - INFO - ================================================================================
+2025-12-11 01:35:18,220 - data_pipeline - INFO - Total time: 13m 10s
+2025-12-11 01:35:18,220 - data_pipeline - INFO - 
+Generated embeddings:
+2025-12-11 01:35:18,220 - data_pipeline - INFO -   Directory: /home/benz/coding_project/elm/data/embeddings
+2025-12-11 01:35:18,220 - data_pipeline - INFO -     - train_embeddings.safetensors
+2025-12-11 01:35:18,220 - data_pipeline - INFO -     - val_embeddings.safetensors
+2025-12-11 01:35:18,220 - data_pipeline - INFO -     - test_embeddings.safetensors

@@ -1,0 +1,330 @@
+2025-12-08 19:37:33,905 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:37:33,905 - data_pipeline - INFO - ELM Data Preparation Pipeline
+2025-12-08 19:37:33,905 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:37:33,905 - data_pipeline - INFO - 
+Config(
+  data_dir=/home/benz/coding_project/elm/data,
+  model=Qwen/Qwen3-Embedding-4B,
+  tokens=100-2000,
+  split=0.8/0.1/0.1,
+  batch_size=8
+)
+
+2025-12-08 19:37:33,906 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:37:33,906 - data_pipeline - INFO - STEP 1: Loading WikiText-103 dataset
+2025-12-08 19:37:33,906 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:37:33,906 - data_pipeline.download - INFO - Loading dataset: Salesforce/wikitext/wikitext-103-v1
+2025-12-08 19:37:42,230 - data_pipeline.download - INFO - Dataset loaded successfully
+2025-12-08 19:37:42,230 - data_pipeline.download - INFO -   Train samples: 1801350
+2025-12-08 19:37:42,230 - data_pipeline.download - INFO -   Validation samples: 3760
+2025-12-08 19:37:42,230 - data_pipeline.download - INFO -   Test samples: 4358
+2025-12-08 19:37:42,230 - data_pipeline - INFO - Step completed in 8.3s
+
+2025-12-08 19:37:42,230 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:37:42,231 - data_pipeline - INFO - STEP 2: Extracting and preprocessing paragraphs
+2025-12-08 19:37:42,231 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:37:42,231 - data_pipeline.preprocess - INFO - Extracting paragraphs from dataset...
+2025-12-08 19:37:42,231 - data_pipeline.preprocess - INFO - Processing train split...
+2025-12-08 19:37:52,972 - data_pipeline.preprocess - INFO - Processing validation split...
+2025-12-08 19:37:53,000 - data_pipeline.preprocess - INFO - Processing test split...
+2025-12-08 19:37:53,032 - data_pipeline.preprocess - INFO - Extracted 574031 raw paragraphs
+2025-12-08 19:37:53,032 - data_pipeline - INFO - Step completed in 10.8s
+
+2025-12-08 19:37:53,032 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:37:53,032 - data_pipeline - INFO - STEP 3: Filtering paragraphs
+2025-12-08 19:37:53,032 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:37:55,579 - data_pipeline.preprocess - INFO - Filtering paragraphs (token range: 100-2000)...
+2025-12-08 19:43:38,744 - data_pipeline.preprocess - INFO - Kept 243765/574031 paragraphs (42.5%)
+2025-12-08 19:43:38,744 - data_pipeline - INFO - Step completed in 5m 46s
+
+2025-12-08 19:43:38,744 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:43:38,744 - data_pipeline - INFO - STEP 4: Splitting dataset
+2025-12-08 19:43:38,744 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:43:38,744 - data_pipeline.preprocess - INFO - Splitting dataset (train/val/test = 0.8/0.1/0.1)...
+2025-12-08 19:43:38,815 - data_pipeline.preprocess - INFO - Train: 195012 samples
+2025-12-08 19:43:38,816 - data_pipeline.preprocess - INFO - Val: 24376 samples
+2025-12-08 19:43:38,816 - data_pipeline.preprocess - INFO - Test: 24377 samples
+2025-12-08 19:43:38,817 - data_pipeline - INFO - Step completed in 0.1s
+
+2025-12-08 19:43:38,818 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:43:38,818 - data_pipeline - INFO - STEP 5: Saving processed data
+2025-12-08 19:43:38,818 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:43:38,818 - data_pipeline.preprocess - INFO - Saving processed data as parquet files...
+2025-12-08 19:43:40,166 - data_pipeline.preprocess - INFO - Saved train: /home/benz/coding_project/elm/data/wikitext103_processed/train.parquet (195012 samples)
+2025-12-08 19:43:40,494 - data_pipeline.preprocess - INFO - Saved val: /home/benz/coding_project/elm/data/wikitext103_processed/val.parquet (24376 samples)
+2025-12-08 19:43:40,803 - data_pipeline.preprocess - INFO - Saved test: /home/benz/coding_project/elm/data/wikitext103_processed/test.parquet (24377 samples)
+2025-12-08 19:43:40,803 - data_pipeline.preprocess - INFO - All data saved successfully
+2025-12-08 19:43:40,803 - data_pipeline - INFO - Step completed in 2.0s
+
+2025-12-08 19:43:40,803 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:43:40,803 - data_pipeline - INFO - STEP 6: Generating embeddings
+2025-12-08 19:43:40,803 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:43:40,803 - data_pipeline.embeddings - INFO - Loading embedding model: Qwen/Qwen3-Embedding-4B
+2025-12-08 19:43:41,746 - data_pipeline.embeddings - INFO - Loading model with flash_attention_2...
+2025-12-08 19:44:13,156 - data_pipeline.embeddings - WARNING - Failed to load with flash_attention_2: FlashAttention2 has been toggled on, but it cannot be used due to the following error: the package flash_attn seems to be not installed. Please refer to the documentation of https://huggingface.co/docs/transformers/perf_infer_gpu_one#flashattention-2 to install Flash Attention 2.
+2025-12-08 19:44:13,157 - data_pipeline.embeddings - INFO - Falling back to standard attention...
+2025-12-08 19:44:17,592 - data_pipeline.embeddings - INFO - Model loaded on GPU: NVIDIA GeForce RTX 5070 Ti
+2025-12-08 19:44:17,593 - data_pipeline.embeddings - INFO - Available VRAM: 17.09 GB
+2025-12-08 19:44:17,594 - data_pipeline.embeddings - INFO - Model parameters: 4,021,774,336
+2025-12-08 19:44:17,655 - data_pipeline - INFO - 
+Processing train split...
+2025-12-08 19:44:17,658 - data_pipeline.embeddings - INFO - Loading texts from /home/benz/coding_project/elm/data/wikitext103_processed/train.parquet...
+2025-12-08 19:44:17,930 - data_pipeline.embeddings - INFO - Loaded 195012 texts
+2025-12-08 19:44:17,931 - data_pipeline.embeddings - INFO - Generating embeddings for 195012 texts...
+2025-12-08 19:44:17,931 - data_pipeline.embeddings - INFO - Batch size: 8, Max length: 8192
+2025-12-08 19:47:22,758 - data_pipeline - WARNING - 
+Pipeline interrupted by user
+2025-12-08 19:47:31,547 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:47:31,548 - data_pipeline - INFO - ELM Data Preparation Pipeline
+2025-12-08 19:47:31,548 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:47:31,548 - data_pipeline - INFO - 
+Config(
+  data_dir=/home/benz/coding_project/elm/data,
+  model=Qwen/Qwen3-Embedding-4B,
+  tokens=100-2000,
+  split=0.8/0.1/0.1,
+  batch_size=8
+)
+
+2025-12-08 19:47:31,548 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:47:31,548 - data_pipeline - INFO - STEP 1: Loading WikiText-103 dataset
+2025-12-08 19:47:31,548 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:47:31,548 - data_pipeline.download - INFO - Loading dataset: Salesforce/wikitext/wikitext-103-v1
+2025-12-08 19:47:33,101 - data_pipeline.download - INFO - Dataset loaded successfully
+2025-12-08 19:47:33,102 - data_pipeline.download - INFO -   Train samples: 1801350
+2025-12-08 19:47:33,102 - data_pipeline.download - INFO -   Validation samples: 3760
+2025-12-08 19:47:33,102 - data_pipeline.download - INFO -   Test samples: 4358
+2025-12-08 19:47:33,102 - data_pipeline - INFO - Step completed in 1.6s
+
+2025-12-08 19:47:33,102 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:47:33,102 - data_pipeline - INFO - STEP 2: Extracting and preprocessing paragraphs
+2025-12-08 19:47:33,102 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:47:33,102 - data_pipeline.preprocess - INFO - Extracting paragraphs from dataset...
+2025-12-08 19:47:33,102 - data_pipeline.preprocess - INFO - Processing train split...
+2025-12-08 19:47:45,384 - data_pipeline.preprocess - INFO - Processing validation split...
+2025-12-08 19:47:45,411 - data_pipeline.preprocess - INFO - Processing test split...
+2025-12-08 19:47:45,441 - data_pipeline.preprocess - INFO - Extracted 574031 raw paragraphs
+2025-12-08 19:47:45,442 - data_pipeline - INFO - Step completed in 12.3s
+
+2025-12-08 19:47:45,442 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:47:45,442 - data_pipeline - INFO - STEP 3: Filtering paragraphs
+2025-12-08 19:47:45,442 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:47:46,138 - data_pipeline.preprocess - INFO - Filtering paragraphs (token range: 100-2000)...
+2025-12-08 19:52:53,699 - data_pipeline.preprocess - INFO - Kept 243765/574031 paragraphs (42.5%)
+2025-12-08 19:52:53,699 - data_pipeline - INFO - Step completed in 5m 8s
+
+2025-12-08 19:52:53,699 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:52:53,699 - data_pipeline - INFO - STEP 4: Splitting dataset
+2025-12-08 19:52:53,699 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:52:53,699 - data_pipeline.preprocess - INFO - Splitting dataset (train/val/test = 0.8/0.1/0.1)...
+2025-12-08 19:52:53,769 - data_pipeline.preprocess - INFO - Train: 195012 samples
+2025-12-08 19:52:53,769 - data_pipeline.preprocess - INFO - Val: 24376 samples
+2025-12-08 19:52:53,769 - data_pipeline.preprocess - INFO - Test: 24377 samples
+2025-12-08 19:52:53,771 - data_pipeline - INFO - Step completed in 0.1s
+
+2025-12-08 19:52:53,771 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:52:53,771 - data_pipeline - INFO - STEP 5: Saving processed data
+2025-12-08 19:52:53,771 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:52:53,771 - data_pipeline.preprocess - INFO - Saving processed data as parquet files...
+2025-12-08 19:52:55,089 - data_pipeline.preprocess - INFO - Saved train: /home/benz/coding_project/elm/data/wikitext103_processed/train.parquet (195012 samples)
+2025-12-08 19:52:55,434 - data_pipeline.preprocess - INFO - Saved val: /home/benz/coding_project/elm/data/wikitext103_processed/val.parquet (24376 samples)
+2025-12-08 19:52:53,539 - data_pipeline.preprocess - INFO - Saved test: /home/benz/coding_project/elm/data/wikitext103_processed/test.parquet (24377 samples)
+2025-12-08 19:52:53,539 - data_pipeline.preprocess - INFO - All data saved successfully
+2025-12-08 19:52:53,539 - data_pipeline - INFO - Step completed in -0.2s
+
+2025-12-08 19:52:53,539 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:52:53,539 - data_pipeline - INFO - STEP 6: Generating embeddings
+2025-12-08 19:52:53,539 - data_pipeline - INFO - ================================================================================
+2025-12-08 19:52:53,539 - data_pipeline.embeddings - INFO - Loading embedding model: Qwen/Qwen3-Embedding-4B
+2025-12-08 19:52:54,434 - data_pipeline.embeddings - INFO - Loading model with flash_attention_2...
+2025-12-08 19:52:55,470 - data_pipeline.embeddings - WARNING - Failed to load with flash_attention_2: FlashAttention2 has been toggled on, but it cannot be used due to the following error: the package flash_attn seems to be not installed. Please refer to the documentation of https://huggingface.co/docs/transformers/perf_infer_gpu_one#flashattention-2 to install Flash Attention 2.
+2025-12-08 19:52:55,470 - data_pipeline.embeddings - INFO - Falling back to standard attention...
+2025-12-08 19:52:59,815 - data_pipeline.embeddings - INFO - Model loaded on GPU: NVIDIA GeForce RTX 5070 Ti
+2025-12-08 19:52:59,821 - data_pipeline.embeddings - INFO - Available VRAM: 17.09 GB
+2025-12-08 19:52:59,823 - data_pipeline.embeddings - INFO - Model parameters: 4,021,774,336
+2025-12-08 19:52:59,889 - data_pipeline - INFO - 
+Processing train split...
+2025-12-08 19:52:59,897 - data_pipeline.embeddings - INFO - Loading texts from /home/benz/coding_project/elm/data/wikitext103_processed/train.parquet...
+2025-12-08 19:53:00,190 - data_pipeline.embeddings - INFO - Loaded 195012 texts
+2025-12-08 19:53:00,191 - data_pipeline.embeddings - INFO - Generating embeddings for 195012 texts...
+2025-12-08 19:53:00,191 - data_pipeline.embeddings - INFO - Batch size: 8, Max length: 8192
+2025-12-08 22:22:32,378 - data_pipeline - INFO - ================================================================================
+2025-12-08 22:22:32,378 - data_pipeline - INFO - ELM Data Preparation Pipeline
+2025-12-08 22:22:32,379 - data_pipeline - INFO - ================================================================================
+2025-12-08 22:22:32,379 - data_pipeline - INFO - 
+Config(
+  data_dir=/home/benz/coding_project/elm/data,
+  model=Qwen/Qwen3-Embedding-4B,
+  tokens=100-2000,
+  split=0.8/0.1/0.1,
+  batch_size=8
+)
+
+2025-12-08 22:22:32,379 - data_pipeline - INFO - Skipping download and preprocessing (--skip-download)
+2025-12-08 22:22:32,379 - data_pipeline - INFO - ================================================================================
+2025-12-08 22:22:32,379 - data_pipeline - INFO - STEP 6: Generating embeddings
+2025-12-08 22:22:32,379 - data_pipeline - INFO - ================================================================================
+2025-12-08 22:22:32,379 - data_pipeline.embeddings - INFO - Loading embedding model: Qwen/Qwen3-Embedding-4B
+2025-12-08 22:22:33,061 - data_pipeline.embeddings - INFO - Loading model with flash_attention_2...
+2025-12-08 22:22:34,100 - data_pipeline.embeddings - WARNING - Failed to load with flash_attention_2: FlashAttention2 has been toggled on, but it cannot be used due to the following error: the package flash_attn seems to be not installed. Please refer to the documentation of https://huggingface.co/docs/transformers/perf_infer_gpu_one#flashattention-2 to install Flash Attention 2.
+2025-12-08 22:22:34,100 - data_pipeline.embeddings - INFO - Falling back to standard attention...
+2025-12-08 22:22:38,764 - data_pipeline.embeddings - INFO - Model loaded on GPU: NVIDIA GeForce RTX 5070 Ti
+2025-12-08 22:22:38,765 - data_pipeline.embeddings - INFO - Available VRAM: 17.09 GB
+2025-12-08 22:22:38,766 - data_pipeline.embeddings - INFO - Model parameters: 4,021,774,336
+2025-12-08 22:22:38,767 - data_pipeline - INFO - 
+Processing train split...
+2025-12-08 22:22:38,767 - data_pipeline.embeddings - INFO - Loading texts from /home/benz/coding_project/elm/data/wikitext103_processed/train.parquet...
+2025-12-08 22:22:39,110 - data_pipeline.embeddings - INFO - Loaded 195012 texts
+2025-12-08 22:22:39,111 - data_pipeline.embeddings - INFO - Generating embeddings for 195012 texts...
+2025-12-08 22:22:39,111 - data_pipeline.embeddings - INFO - Batch size: 8, Max length: 8192
+2025-12-08 22:23:05,801 - data_pipeline - WARNING - 
+Pipeline interrupted by user
+2025-12-08 22:27:06,867 - data_pipeline - INFO - ================================================================================
+2025-12-08 22:27:06,867 - data_pipeline - INFO - ELM Data Preparation Pipeline
+2025-12-08 22:27:06,867 - data_pipeline - INFO - ================================================================================
+2025-12-08 22:27:06,867 - data_pipeline - INFO - 
+Config(
+  data_dir=/home/benz/coding_project/elm/data,
+  model=Qwen/Qwen3-Embedding-4B,
+  tokens=100-2000,
+  split=0.8/0.1/0.1,
+  batch_size=8
+)
+
+2025-12-08 22:27:06,867 - data_pipeline - INFO - Skipping download and preprocessing (--skip-download)
+2025-12-08 22:27:06,867 - data_pipeline - INFO - ================================================================================
+2025-12-08 22:27:06,867 - data_pipeline - INFO - STEP 6: Generating embeddings
+2025-12-08 22:27:06,867 - data_pipeline - INFO - ================================================================================
+2025-12-08 22:27:06,867 - data_pipeline.embeddings - INFO - Loading embedding model: Qwen/Qwen3-Embedding-4B
+2025-12-08 22:27:07,603 - data_pipeline.embeddings - INFO - Loading model with flash_attention_2...
+2025-12-08 22:27:07,813 - data_pipeline.embeddings - WARNING - Failed to load with flash_attention_2: FlashAttention2 has been toggled on, but it cannot be used due to the following error: the package flash_attn seems to be not installed. Please refer to the documentation of https://huggingface.co/docs/transformers/perf_infer_gpu_one#flashattention-2 to install Flash Attention 2.
+2025-12-08 22:27:07,813 - data_pipeline.embeddings - INFO - Falling back to standard attention...
+2025-12-08 22:27:11,282 - data_pipeline.embeddings - INFO - Model loaded on GPU: NVIDIA GeForce RTX 5070 Ti
+2025-12-08 22:27:11,283 - data_pipeline.embeddings - INFO - Available VRAM: 17.09 GB
+2025-12-08 22:27:11,283 - data_pipeline.embeddings - INFO - Model parameters: 4,021,774,336
+2025-12-08 22:27:11,284 - data_pipeline - INFO - 
+Processing train split...
+2025-12-08 22:27:11,284 - data_pipeline.embeddings - INFO - Loading texts from /home/benz/coding_project/elm/data/wikitext103_processed/train.parquet...
+2025-12-08 22:27:11,556 - data_pipeline.embeddings - INFO - Loaded 195012 texts
+2025-12-08 22:27:11,557 - data_pipeline.embeddings - INFO - Generating embeddings for 195012 texts...
+2025-12-08 22:27:11,557 - data_pipeline.embeddings - INFO - Batch size: 8, Max length: 8192
+2025-12-08 23:29:29,352 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:29,353 - data_pipeline - INFO - ELM Data Preparation Pipeline
+2025-12-08 23:29:29,353 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:29,353 - data_pipeline - INFO - 
+Config(
+  data_dir=/home/benz/coding_project/elm/data,
+  model=Qwen/Qwen3-Embedding-4B,
+  tokens=100-2000,
+  split=0.8/0.1/0.1,
+  batch_size=8
+)
+
+2025-12-08 23:29:29,353 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:29,354 - data_pipeline - INFO - STEP 1: Loading WikiText-2 dataset
+2025-12-08 23:29:29,354 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:29,354 - data_pipeline.download - INFO - Loading dataset: Salesforce/wikitext/wikitext-2-v1
+2025-12-08 23:29:32,071 - data_pipeline.download - INFO - Dataset loaded successfully
+2025-12-08 23:29:32,071 - data_pipeline.download - INFO -   Train samples: 36718
+2025-12-08 23:29:32,071 - data_pipeline.download - INFO -   Validation samples: 3760
+2025-12-08 23:29:32,071 - data_pipeline.download - INFO -   Test samples: 4358
+2025-12-08 23:29:32,071 - data_pipeline - INFO - Step completed in 2.7s
+
+2025-12-08 23:29:32,071 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:32,071 - data_pipeline - INFO - STEP 2: Extracting and preprocessing paragraphs
+2025-12-08 23:29:32,071 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:32,071 - data_pipeline.preprocess - INFO - Extracting paragraphs from dataset...
+2025-12-08 23:29:32,072 - data_pipeline.preprocess - INFO - Processing train split...
+2025-12-08 23:29:32,330 - data_pipeline.preprocess - INFO - Processing validation split...
+2025-12-08 23:29:32,358 - data_pipeline.preprocess - INFO - Processing test split...
+2025-12-08 23:29:32,390 - data_pipeline.preprocess - INFO - Extracted 14149 raw paragraphs
+2025-12-08 23:29:32,391 - data_pipeline - INFO - Step completed in 0.3s
+
+2025-12-08 23:29:32,391 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:32,401 - data_pipeline - INFO - STEP 3: Filtering paragraphs
+2025-12-08 23:29:32,401 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:32,934 - data_pipeline.preprocess - INFO - Filtering paragraphs (token range: 100-2000)...
+2025-12-08 23:29:38,585 - data_pipeline.preprocess - INFO - Kept 6017/14149 paragraphs (42.5%)
+2025-12-08 23:29:38,585 - data_pipeline - INFO - Step completed in 6.2s
+
+2025-12-08 23:29:38,585 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:38,586 - data_pipeline - INFO - STEP 4: Splitting dataset
+2025-12-08 23:29:38,586 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:38,586 - data_pipeline.preprocess - INFO - Splitting dataset (train/val/test = 0.8/0.1/0.1)...
+2025-12-08 23:29:38,587 - data_pipeline.preprocess - INFO - Train: 4813 samples
+2025-12-08 23:29:38,587 - data_pipeline.preprocess - INFO - Val: 601 samples
+2025-12-08 23:29:38,587 - data_pipeline.preprocess - INFO - Test: 603 samples
+2025-12-08 23:29:38,587 - data_pipeline - INFO - Step completed in 0.0s
+
+2025-12-08 23:29:38,587 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:38,587 - data_pipeline - INFO - STEP 5: Saving processed data
+2025-12-08 23:29:38,587 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:38,587 - data_pipeline.preprocess - INFO - Saving processed data as parquet files...
+2025-12-08 23:29:38,688 - data_pipeline.preprocess - INFO - Saved train: /home/benz/coding_project/elm/data/wikitext2_processed/train.parquet (4813 samples)
+2025-12-08 23:29:38,699 - data_pipeline.preprocess - INFO - Saved val: /home/benz/coding_project/elm/data/wikitext2_processed/val.parquet (601 samples)
+2025-12-08 23:29:38,709 - data_pipeline.preprocess - INFO - Saved test: /home/benz/coding_project/elm/data/wikitext2_processed/test.parquet (603 samples)
+2025-12-08 23:29:38,709 - data_pipeline.preprocess - INFO - All data saved successfully
+2025-12-08 23:29:38,709 - data_pipeline - INFO - Step completed in 0.1s
+
+2025-12-08 23:29:38,709 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:38,709 - data_pipeline - INFO - STEP 6: Generating embeddings
+2025-12-08 23:29:38,709 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:29:38,709 - data_pipeline.embeddings - INFO - Loading embedding model: Qwen/Qwen3-Embedding-4B
+2025-12-08 23:29:39,342 - data_pipeline.embeddings - INFO - Loading model with flash_attention_2...
+2025-12-08 23:29:39,621 - data_pipeline.embeddings - WARNING - Failed to load with flash_attention_2: FlashAttention2 has been toggled on, but it cannot be used due to the following error: the package flash_attn seems to be not installed. Please refer to the documentation of https://huggingface.co/docs/transformers/perf_infer_gpu_one#flashattention-2 to install Flash Attention 2.
+2025-12-08 23:29:39,622 - data_pipeline.embeddings - INFO - Falling back to standard attention...
+2025-12-08 23:29:44,760 - data_pipeline.embeddings - INFO - Model loaded on GPU: NVIDIA GeForce RTX 5070 Ti
+2025-12-08 23:29:44,760 - data_pipeline.embeddings - INFO - Available VRAM: 17.09 GB
+2025-12-08 23:29:44,761 - data_pipeline.embeddings - INFO - Model parameters: 4,021,774,336
+2025-12-08 23:29:42,663 - data_pipeline - INFO - 
+Processing train split...
+2025-12-08 23:29:42,665 - data_pipeline.embeddings - INFO - Loading texts from /home/benz/coding_project/elm/data/wikitext2_processed/train.parquet...
+2025-12-08 23:29:42,706 - data_pipeline.embeddings - INFO - Loaded 4813 texts
+2025-12-08 23:29:42,706 - data_pipeline.embeddings - INFO - Generating embeddings for 4813 texts...
+2025-12-08 23:29:42,706 - data_pipeline.embeddings - INFO - Batch size: 8, Max length: 8192
+2025-12-08 23:45:36,612 - data_pipeline.embeddings - INFO - Generated embeddings shape: (4813, 2560)
+2025-12-08 23:45:36,612 - data_pipeline.embeddings - INFO - Embedding dtype: float32
+2025-12-08 23:45:36,613 - data_pipeline.embeddings - INFO - Saving embeddings to /home/benz/coding_project/elm/data/embeddings/train_embeddings.safetensors...
+2025-12-08 23:45:36,661 - data_pipeline.embeddings - INFO - Embeddings saved successfully
+2025-12-08 23:45:36,662 - data_pipeline.embeddings - INFO - Completed embeddings for train split
+2025-12-08 23:45:36,663 - data_pipeline - INFO - 
+Processing val split...
+2025-12-08 23:45:36,663 - data_pipeline.embeddings - INFO - Loading texts from /home/benz/coding_project/elm/data/wikitext2_processed/val.parquet...
+2025-12-08 23:45:36,679 - data_pipeline.embeddings - INFO - Loaded 601 texts
+2025-12-08 23:45:36,679 - data_pipeline.embeddings - INFO - Generating embeddings for 601 texts...
+2025-12-08 23:45:36,679 - data_pipeline.embeddings - INFO - Batch size: 8, Max length: 8192
+2025-12-08 23:47:23,372 - data_pipeline.embeddings - INFO - Generated embeddings shape: (601, 2560)
+2025-12-08 23:47:23,372 - data_pipeline.embeddings - INFO - Embedding dtype: float32
+2025-12-08 23:47:23,372 - data_pipeline.embeddings - INFO - Saving embeddings to /home/benz/coding_project/elm/data/embeddings/val_embeddings.safetensors...
+2025-12-08 23:47:23,376 - data_pipeline.embeddings - INFO - Embeddings saved successfully
+2025-12-08 23:47:23,376 - data_pipeline.embeddings - INFO - Completed embeddings for val split
+2025-12-08 23:47:23,377 - data_pipeline - INFO - 
+Processing test split...
+2025-12-08 23:47:23,377 - data_pipeline.embeddings - INFO - Loading texts from /home/benz/coding_project/elm/data/wikitext2_processed/test.parquet...
+2025-12-08 23:47:23,383 - data_pipeline.embeddings - INFO - Loaded 603 texts
+2025-12-08 23:47:23,383 - data_pipeline.embeddings - INFO - Generating embeddings for 603 texts...
+2025-12-08 23:47:23,383 - data_pipeline.embeddings - INFO - Batch size: 8, Max length: 8192
+2025-12-08 23:49:22,654 - data_pipeline.embeddings - INFO - Generated embeddings shape: (603, 2560)
+2025-12-08 23:49:22,654 - data_pipeline.embeddings - INFO - Embedding dtype: float32
+2025-12-08 23:49:22,655 - data_pipeline.embeddings - INFO - Saving embeddings to /home/benz/coding_project/elm/data/embeddings/test_embeddings.safetensors...
+2025-12-08 23:49:22,658 - data_pipeline.embeddings - INFO - Embeddings saved successfully
+2025-12-08 23:49:22,658 - data_pipeline.embeddings - INFO - Completed embeddings for test split
+2025-12-08 23:49:22,658 - data_pipeline - INFO - 
+All embeddings completed in 19m 44s
+
+2025-12-08 23:49:22,658 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:49:22,658 - data_pipeline - INFO - PIPELINE COMPLETED SUCCESSFULLY
+2025-12-08 23:49:22,658 - data_pipeline - INFO - ================================================================================
+2025-12-08 23:49:22,659 - data_pipeline - INFO - Total time: 19m 53s
+2025-12-08 23:49:22,659 - data_pipeline - INFO - 
+Output files:
+2025-12-08 23:49:22,659 - data_pipeline - INFO -   Processed data: /home/benz/coding_project/elm/data/wikitext2_processed
+2025-12-08 23:49:22,659 - data_pipeline - INFO -     - train.parquet
+2025-12-08 23:49:22,659 - data_pipeline - INFO -     - val.parquet
+2025-12-08 23:49:22,659 - data_pipeline - INFO -     - test.parquet
+2025-12-08 23:49:22,659 - data_pipeline - INFO -   Embeddings: /home/benz/coding_project/elm/data/embeddings
+2025-12-08 23:49:22,659 - data_pipeline - INFO -     - train_embeddings.safetensors
+2025-12-08 23:49:22,659 - data_pipeline - INFO -     - val_embeddings.safetensors
+2025-12-08 23:49:22,659 - data_pipeline - INFO -     - test_embeddings.safetensors
+2025-12-08 23:49:22,659 - data_pipeline - INFO - 
+You can now use the ELMDataset class to load and use this data!

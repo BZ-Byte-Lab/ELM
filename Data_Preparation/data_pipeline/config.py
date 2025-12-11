@@ -41,6 +41,9 @@ class Config:
     use_flash_attention: bool = True
     use_fp16: bool = True
 
+    # Embedding normalization
+    normalize_embeddings: bool = False
+
     def __post_init__(self):
         """Initialize derived paths."""
         self.data_dir = self.base_dir / "data"
@@ -78,6 +81,17 @@ class Config:
             Path to the safetensors file
         """
         return self.embeddings_dir / f"{split}_embeddings.safetensors"
+
+    def get_normalized_embeddings_path(self, split: str) -> Path:
+        """Get path to normalized embeddings file for a given split.
+
+        Args:
+            split: One of 'train', 'val', or 'test'
+
+        Returns:
+            Path to the normalized safetensors file
+        """
+        return self.embeddings_dir / "normalized" / f"{split}_embeddings.safetensors"
 
     def __repr__(self):
         """Custom representation."""

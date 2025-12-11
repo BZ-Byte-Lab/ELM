@@ -35,10 +35,6 @@ ENV/
 # Jupyter Notebook
 .ipynb_checkpoints/
 
-# Generated data and outputs (DO NOT COMMIT LARGE FILES)
-data/
-logs/
-*.log
 
 # Testing and coverage
 .pytest_cache/
