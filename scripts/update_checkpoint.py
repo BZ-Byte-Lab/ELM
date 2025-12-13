@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Update checkpoint files for all tasks to match actual train_synthesis.jsonl data.
+Update checkpoint files for all tasks to match actual synthesis data.
 
-This script automatically discovers all task types in the train_synthesis.jsonl file
-and creates/updates checkpoint files for each task type with accurate completed indices
-and generation counts.
+This script automatically discovers all splits (train, test, val) and task types
+in the synthesis JSONL files and creates/updates checkpoint files for each
+split and task type combination with accurate completed indices and generation counts.
 """
 
 import json
@@ -16,7 +16,7 @@ def update_checkpoint(jsonl_path: Path, checkpoint_path: Path, task_name: str):
     Update checkpoint file based on actual JSONL data.
 
     Args:
-        jsonl_path: Path to train_synthesis.jsonl
+        jsonl_path: Path to synthesis JSONL file (train/test/val)
         checkpoint_path: Path to checkpoint file
         task_name: Task name to update (e.g., "summary")
     """
@@ -77,41 +77,66 @@ def update_checkpoint(jsonl_path: Path, checkpoint_path: Path, task_name: str):
 
 if __name__ == "__main__":
     # Paths
-    jsonl_path = Path("data/synthesis/train_synthesis.jsonl")
+    synthesis_dir = Path("data/synthesis")
     checkpoints_dir = Path("data/synthesis/checkpoints")
-
-    # Check if files exist
-    if not jsonl_path.exists():
-        print(f"❌ Error: {jsonl_path} not found!")
-        exit(1)
 
     # Create checkpoint directory if needed
     checkpoints_dir.mkdir(parents=True, exist_ok=True)
 
-    # First, discover all unique task types in the JSONL file
+    # Discover all split files (train, test, val)
+    splits = ['train', 'test', 'val']
+    available_splits = []
+
+    for split in splits:
+        jsonl_path = synthesis_dir / f"{split}_synthesis.jsonl"
+        if jsonl_path.exists():
+            available_splits.append(split)
+
+    if not available_splits:
+        print(f"❌ Error: No synthesis files found in {synthesis_dir}")
+        exit(1)
+
     print("=" * 60)
-    print("Discovering task types...")
+    print(f"Found {len(available_splits)} splits: {', '.join(available_splits)}")
     print("=" * 60)
+    print()
 
-    task_types = set()
-    with open(jsonl_path, 'r') as f:
-        for line in f:
-            record = json.loads(line.strip())
-            task_types.add(record['task_type'])
+    # Process each split
+    for split in available_splits:
+        jsonl_path = synthesis_dir / f"{split}_synthesis.jsonl"
 
-    task_types = sorted(task_types)
-    print(f"\nFound {len(task_types)} task types: {', '.join(task_types)}\n")
-
-    # Update checkpoint for each task type
-    for i, task_name in enumerate(task_types, 1):
         print("=" * 60)
-        print(f"Processing task {i}/{len(task_types)}: {task_name}")
+        print(f"Processing split: {split.upper()}")
         print("=" * 60)
 
-        checkpoint_path = checkpoints_dir / f"train_{task_name}_checkpoint.json"
-        update_checkpoint(jsonl_path, checkpoint_path, task_name)
+        # Discover all unique task types in the JSONL file
+        print(f"Discovering task types in {jsonl_path.name}...")
+
+        task_types = set()
+        with open(jsonl_path, 'r') as f:
+            for line in f:
+                record = json.loads(line.strip())
+                task_types.add(record['task_type'])
+
+        task_types = sorted(task_types)
+        print(f"Found {len(task_types)} task types: {', '.join(task_types)}\n")
+
+        # Update checkpoint for each task type
+        for i, task_name in enumerate(task_types, 1):
+            print("-" * 60)
+            print(f"Processing task {i}/{len(task_types)}: {task_name}")
+            print("-" * 60)
+
+            checkpoint_path = checkpoints_dir / f"{split}_{task_name}_checkpoint.json"
+            update_checkpoint(jsonl_path, checkpoint_path, task_name)
+            print()
+
+        print("=" * 60)
+        print(f"✅ All {len(task_types)} checkpoints updated for {split.upper()} split!")
+        print("=" * 60)
         print()
 
     print("=" * 60)
-    print(f"✅ All {len(task_types)} checkpoints updated successfully!")
+    print(f"✅ ALL CHECKPOINTS UPDATED SUCCESSFULLY!")
+    print(f"   Processed {len(available_splits)} splits: {', '.join(available_splits)}")
     print("=" * 60)

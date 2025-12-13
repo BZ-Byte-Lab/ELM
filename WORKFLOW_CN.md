@@ -7,11 +7,12 @@
 1. [项目概述](#1-项目概述)
 2. [第一阶段：数据准备 (Data_Preparation)](#2-第一阶段数据准备-data_preparation)
 3. [第二阶段：数据合成 (Data_Synthesis)](#3-第二阶段数据合成-data_synthesis)
-4. [数据流向图](#4-数据流向图)
-5. [输出格式说明](#5-输出格式说明)
-6. [运行指南](#6-运行指南)
-7. [项目级工具脚本](#7-项目级工具脚本)
-8. [总结](#8-总结)
+4. [第三阶段：模型训练 (Training)](#4-第三阶段模型训练-training)
+5. [数据流向图](#5-数据流向图)
+6. [输出格式说明](#6-输出格式说明)
+7. [运行指南](#7-运行指南)
+8. [项目级工具脚本](#8-项目级工具脚本)
+9. [总结](#9-总结)
 
 ---
 
@@ -19,10 +20,11 @@
 
 ### 1.1 项目目标
 
-ELM 项目是一个两阶段数据处理流水线，用于：
+ELM 项目是一个三阶段数据处理和模型训练流水线，用于：
 
 1. **数据准备阶段**：从 WikiText-2 数据集提取高质量文本段落，并使用 Qwen3-Embedding-4B 模型生成 2560 维嵌入向量
 2. **数据合成阶段**：利用 LLM (Qwen3-30B-A3B-Instruct) 生成多样化的合成训练数据，覆盖 16 种任务类型
+3. **模型训练阶段**：训练 ELM MLP Adapter，学习将嵌入向量映射到 Qwen3-4B-Instruct 的 token 嵌入空间
 
 ### 1.2 项目结构
 
@@ -56,6 +58,21 @@ elm/
 │   └── scripts/
 │       └── run_synthesis.py    # 合成入口
 │
+├── Training/                   # 第三阶段：模型训练
+│   ├── environment.yml         # 独立 Conda 环境
+│   ├── pyproject.toml          # 包配置
+│   ├── training_pipeline/      # 核心训练模块
+│   │   ├── config.py           # 训练配置
+│   │   ├── adapter.py          # MLP Adapter
+│   │   ├── model.py            # ELM 模型
+│   │   ├── dataset.py          # 训练数据集
+│   │   ├── trainer.py          # 训练器
+│   │   ├── checkpoint.py       # 检查点管理
+│   │   └── utils.py            # 工具函数
+│   └── scripts/
+│       ├── train.py            # 训练入口
+│       └── evaluate.py         # 评估脚本
+│
 ├── scripts/                    # 项目级脚本
 │   ├── sort_by_task_type.py    # 按任务类型排序 JSONL
 │   └── update_checkpoint.py    # 更新检查点文件
@@ -63,7 +80,8 @@ elm/
 ├── data/                       # 输出数据目录
 │   ├── wikitext2_processed/    # 预处理文本 (Parquet)
 │   ├── embeddings/             # 嵌入向量 (SafeTensors)
-│   └── synthesis/              # 合成数据 (JSONL)
+│   ├── synthesis/              # 合成数据 (JSONL)
+│   └── checkpoints/            # Adapter 检查点
 │
 └── logs/                       # 日志文件
 ```
@@ -1741,9 +1759,418 @@ async def _process_pair_task_async(
 
 ---
 
-## 4. 数据流向图
+## 4. 第三阶段：模型训练 (Training)
 
-### 4.1 完整流程图
+模型训练阶段使用前两个阶段生成的数据训练 ELM MLP Adapter。
+
+### 4.1 训练配置 (config.py)
+
+训练配置模块定义了 Adapter 训练的所有参数：
+
+#### TrainingConfig 数据类
+
+```python
+@dataclass
+class TrainingConfig:
+    """ELM Adapter 训练配置"""
+
+    # 模型配置
+    llm_model_name: str = "Qwen/Qwen3-4B-Instruct"  # 基础 LLM（冻结）
+    embedding_dim: int = 2560                        # 嵌入维度
+    hidden_dim: int = 4096                           # Adapter 中间层维度
+
+    # 训练超参数
+    learning_rate: float = 1e-4                      # 学习率
+    warmup_steps: int = 1000                         # 预热步数
+    weight_decay: float = 0.01                       # 权重衰减
+    max_grad_norm: float = 1.0                       # 梯度裁剪
+
+    # 批次配置（40GB VRAM 优化）
+    batch_size: int = 16                             # 批次大小
+    gradient_accumulation_steps: int = 2             # 梯度累积（有效批次=32）
+
+    # 训练计划
+    num_epochs: int = 3                              # 训练轮数
+    eval_steps: int = 500                            # 评估间隔
+    save_steps: int = 1000                           # 保存间隔
+
+    # 内存优化
+    use_bf16: bool = True                            # BFloat16 混合精度
+    use_gradient_checkpointing: bool = True          # 梯度检查点
+
+    # 特殊 token
+    emb_token: str = "<EMB>"                         # 嵌入占位符 token
+```
+
+### 4.2 MLP Adapter 架构 (adapter.py)
+
+#### EnhancedAdapter 设计
+
+```python
+class EnhancedAdapter(nn.Module):
+    """
+    增强型 MLP Adapter
+
+    架构：
+        输入: (batch, 2560)
+        ↓
+        Linear(2560 → 4096) + GELU
+        ↓
+        Linear(4096 → 2560)
+        ↓
+        Residual Connection: output = adapter(x) + x
+        ↓
+        LayerNorm(2560)
+        ↓
+        输出: (batch, 2560)
+
+    参数量：~21M
+        - Up projection: 2560 × 4096 + 4096 = 10.49M
+        - Down projection: 4096 × 2560 + 2560 = 10.49M
+        - LayerNorm: 2560 × 2 = 5K
+    """
+
+    def __init__(self, embedding_dim=2560, hidden_dim=4096):
+        super().__init__()
+        self.up_proj = nn.Linear(embedding_dim, hidden_dim)
+        self.activation = nn.GELU()
+        self.down_proj = nn.Linear(hidden_dim, embedding_dim)
+        self.layer_norm = nn.LayerNorm(embedding_dim)
+
+        # 小标准差初始化（0.02）
+        # 使得初始输出接近 0，让残差连接主导
+        self._init_weights()
+
+    def forward(self, x):
+        residual = x
+        x = self.up_proj(x)
+        x = self.activation(x)
+        x = self.down_proj(x)
+        x = x + residual  # 残差连接
+        x = self.layer_norm(x)
+        return x
+```
+
+**为什么使用残差连接？**
+
+- **稳定训练**：初期让 LLM 看到近似原始嵌入
+- **梯度流动**：避免梯度消失
+- **渐进学习**：Adapter 逐渐学习必要的变换
+
+### 4.3 ELM 模型 (model.py)
+
+#### 模型组件
+
+```python
+class ELMModel(nn.Module):
+    """
+    ELM 模型：冻结 LLM + 可训练 Adapter
+
+    组件：
+        E_0: 冻结的 token 嵌入层（Qwen3-4B-Instruct）
+        E_A: 可训练的 MLP Adapter (~21M 参数)
+        M_0: 冻结的 Transformer 层（Qwen3-4B-Instruct ~4B 参数）
+
+    训练策略：
+        ✓ 只训练 E_A
+        ✗ E_0 和 M_0 完全冻结（requires_grad=False）
+    """
+
+    def __init__(self, config):
+        super().__init__()
+
+        # 1. 加载并配置 tokenizer
+        self.tokenizer = AutoTokenizer.from_pretrained(config.llm_model_name)
+        self.tokenizer.add_special_tokens({'additional_special_tokens': ['<EMB>']})
+
+        # 2. 加载冻结的 LLM
+        self.llm = AutoModelForCausalLM.from_pretrained(
+            config.llm_model_name,
+            torch_dtype=torch.bfloat16,
+            attn_implementation="flash_attention_2"
+        )
+        self.llm.resize_token_embeddings(len(self.tokenizer))
+
+        # 3. 冻结所有 LLM 参数
+        for param in self.llm.parameters():
+            param.requires_grad = False
+
+        # 4. 启用梯度检查点（节省显存）
+        self.llm.gradient_checkpointing_enable()
+
+        # 5. 创建可训练 Adapter
+        self.adapter = EnhancedAdapter(config.embedding_dim, config.hidden_dim)
+```
+
+#### 前向传播流程
+
+```python
+def forward(self, input_ids, attention_mask, embeddings, embedding_positions, labels):
+    """
+    前向传播与嵌入注入
+
+    步骤：
+        1. E_0(input_ids) → token_embeds (batch, seq_len, 2560)
+        2. E_A(embeddings) → adapted_embeds (batch, 2560)
+        3. token_embeds[:, emb_pos] = adapted_embeds  # 注入
+        4. M_0(token_embeds) → logits
+        5. CrossEntropyLoss(logits, labels) → loss
+    """
+    # 获取 token 嵌入
+    token_embeds = self.llm.model.embed_tokens(input_ids)
+
+    # 通过 Adapter 变换外部嵌入
+    adapted_embeds = self.adapter(embeddings)
+
+    # 在 <EMB> 位置注入 adapted 嵌入
+    for i, pos in enumerate(embedding_positions):
+        token_embeds[i, pos] = adapted_embeds[i]
+
+    # 通过冻结的 Transformer
+    outputs = self.llm(inputs_embeds=token_embeds, attention_mask=attention_mask, labels=labels)
+
+    return {'loss': outputs.loss, 'logits': outputs.logits}
+```
+
+### 4.4 训练数据集 (dataset.py)
+
+#### ELMTrainingDataset
+
+```python
+class ELMTrainingDataset(Dataset):
+    """
+    ELM 训练数据集
+
+    加载：
+        - synthesis JSONL: task_type, embedding_index, target_text
+        - embeddings SafeTensors: 预计算的嵌入向量
+
+    返回：
+        {
+            'embedding': np.ndarray (2560,),
+            'task_type': str,
+            'target_text': str,
+            'embedding_index': int
+        }
+    """
+
+    def __init__(self, synthesis_path, embeddings_path):
+        # 加载嵌入
+        tensors = load_file(str(embeddings_path))
+        self.embeddings = tensors["embeddings"]  # (N, 2560)
+
+        # 加载 JSONL
+        self.samples = []
+        with open(synthesis_path) as f:
+            for line in f:
+                self.samples.append(json.loads(line))
+
+    def __getitem__(self, idx):
+        sample = self.samples[idx]
+        embedding_idx = sample["embedding_index"]
+
+        return {
+            "embedding": self.embeddings[embedding_idx],
+            "task_type": sample["task_type"],
+            "target_text": sample["target_text"],
+            "embedding_index": embedding_idx
+        }
+```
+
+#### TrainingCollator
+
+```python
+class TrainingCollator:
+    """
+    训练批次整理器
+
+    格式化输入：
+        "<EMB> {task_prompt}\n{target_text}"
+
+    任务 Prompt 映射：
+        - keywords → "Extract key concepts:"
+        - summary → "Summarize:"
+        - compare → "Compare these:"
+        ...（16 种任务类型）
+
+    Label 掩码：
+        - Prompt 部分：-100（不计算损失）
+        - Target 部分：实际 token ID（计算损失）
+    """
+
+    TASK_PROMPTS = {
+        "keywords": "Extract key concepts:",
+        "summary": "Summarize:",
+        "describe": "Describe in detail:",
+        # ... 其他 13 种任务
+    }
+
+    def __call__(self, batch):
+        # 为每个样本构建输入文本
+        input_texts = []
+        for sample in batch:
+            prompt = self.TASK_PROMPTS[sample["task_type"]]
+            input_text = f"<EMB> {prompt}\n{sample['target_text']}"
+            input_texts.append(input_text)
+
+        # Tokenize
+        encodings = self.tokenizer(input_texts, padding=True, truncation=True, ...)
+
+        # 创建 labels（掩码 prompt 部分）
+        labels = encodings["input_ids"].clone()
+        # ... 掩码逻辑
+
+        return {
+            "input_ids": encodings["input_ids"],
+            "attention_mask": encodings["attention_mask"],
+            "embeddings": torch.stack(embeddings),
+            "embedding_positions": emb_positions,
+            "labels": labels
+        }
+```
+
+### 4.5 训练器 (trainer.py)
+
+#### ELMTrainer 核心训练循环
+
+```python
+class ELMTrainer:
+    """
+    ELM Adapter 训练器
+
+    功能：
+        - 混合精度训练（BFloat16）
+        - 梯度累积（有效批次=32）
+        - 梯度裁剪（max_norm=1.0）
+        - Warmup + 线性衰减调度
+        - 定期评估和保存
+    """
+
+    def train_epoch(self, train_loader, val_loader, scaler):
+        self.model.train()
+
+        for step, batch in enumerate(train_loader):
+            # 混合精度前向传播
+            with torch.cuda.amp.autocast(dtype=torch.bfloat16):
+                outputs = self.model(**batch)
+                loss = outputs['loss'] / self.config.gradient_accumulation_steps
+
+            # 反向传播
+            scaler.scale(loss).backward()
+
+            # 梯度累积步骤
+            if (step + 1) % self.config.gradient_accumulation_steps == 0:
+                # 梯度裁剪
+                scaler.unscale_(self.optimizer)
+                torch.nn.utils.clip_grad_norm_(
+                    self.model.adapter.parameters(),
+                    self.config.max_grad_norm
+                )
+
+                # 优化器步骤
+                scaler.step(self.optimizer)
+                scaler.update()
+                self.scheduler.step()
+                self.optimizer.zero_grad()
+
+                self.global_step += 1
+
+                # 定期评估
+                if self.global_step % self.config.eval_steps == 0:
+                    val_loss = self._evaluate(val_loader)
+                    if val_loss < self.best_val_loss:
+                        self.best_val_loss = val_loss
+                        self.checkpoint_manager.save_best(self.model.adapter, val_loss)
+```
+
+### 4.6 检查点管理 (checkpoint.py)
+
+```python
+class AdapterCheckpoint:
+    """
+    Adapter 检查点管理器
+
+    保存策略：
+        - 只保存 Adapter 权重（~21M 参数，而非完整 ~4B LLM）
+        - SafeTensors 格式（adapter_step_X.safetensors）
+        - 训练状态单独保存（checkpoint_step_X.pt）
+
+    文件结构：
+        data/checkpoints/
+        ├── adapter_step_1000.safetensors  # Adapter 权重
+        ├── checkpoint_step_1000.pt         # 优化器/调度器状态
+        ├── adapter_best.safetensors        # 最佳模型
+        └── best_model_meta.json            # 最佳模型元数据
+    """
+
+    def save(self, adapter, optimizer, scheduler, global_step, ...):
+        # 保存 Adapter 权重
+        adapter_path = f"adapter_step_{global_step}.safetensors"
+        save_file(adapter.state_dict(), adapter_path)
+
+        # 保存训练状态
+        state_path = f"checkpoint_step_{global_step}.pt"
+        torch.save({
+            "optimizer_state_dict": optimizer.state_dict(),
+            "scheduler_state_dict": scheduler.state_dict(),
+            "global_step": global_step,
+            ...
+        }, state_path)
+```
+
+### 4.7 训练流程总结
+
+```
+数据加载：
+  synthesis JSONL + embeddings SafeTensors
+        ↓
+  ELMTrainingDataset
+        ↓
+  TrainingCollator
+        ↓
+批次：{input_ids, attention_mask, embeddings, embedding_positions, labels}
+        ↓
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+训练循环（每个批次）：
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  1. E_0(input_ids) → token_embeds          [冻结]
+  2. E_A(embeddings) → adapted_embeds       [可训练 ✓]
+  3. 注入：token_embeds[:, emb_pos] = adapted_embeds
+  4. M_0(token_embeds) → logits             [冻结]
+  5. CrossEntropyLoss(logits, labels) → loss
+        ↓
+  6. loss.backward()  # 梯度只流向 E_A
+  7. clip_grad_norm_(E_A.parameters(), 1.0)
+  8. optimizer.step()  # 只更新 E_A
+  9. scheduler.step()
+        ↓
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+每 500 步：验证集评估
+每 1000 步：保存检查点
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### 4.8 显存使用（40GB VRAM）
+
+| 组件 | 显存占用 |
+|------|---------|
+| Qwen3-4B-Instruct (BF16) | ~8 GB |
+| EnhancedAdapter | ~0.08 GB |
+| 激活值 (batch=16, grad ckpt) | ~8 GB |
+| 优化器状态 (仅 Adapter) | ~0.16 GB |
+| **总计** | **~16-20 GB** |
+
+**优化策略**：
+- ✓ 梯度检查点：激活值显存减半
+- ✓ 仅 Adapter 优化器状态
+- ✓ BFloat16 混合精度
+- ✗ 不需要 8-bit 量化（40GB 足够）
+
+---
+
+## 5. 数据流向图
+
+### 5.1 完整流程图
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -1841,12 +2268,64 @@ async def _process_pair_task_async(
 │                                        ┌──────────────┐                  │
 │                                        │  Validator   │                  │
 │                                        │  (验证清单)   │                  │
-│                                        └──────────────┘                  │
+│                                        └──────┬───────┘                  │
+│                                               │                           │
+└───────────────────────────────────────────────┼───────────────────────────┘
+                                                │
+                                                ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     第三阶段：Training                                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  输入数据：                                                                  │
+│  ├── synthesis/train_synthesis.jsonl      （合成训练数据）                  │
+│  ├── synthesis/val_synthesis.jsonl        （验证数据）                      │
+│  ├── embeddings/train_embeddings.safetensors                                │
+│  └── embeddings/val_embeddings.safetensors                                  │
+│                   │                                                         │
+│                   ▼                                                         │
+│  ┌────────────────────────────────────────────────────────────────┐        │
+│  │              ELMTrainingDataset + TrainingCollator              │        │
+│  │  Format: "<EMB> {task_prompt}\n{target_text}"                  │        │
+│  └─────────────────────────┬──────────────────────────────────────┘        │
+│                            │                                                │
+│                            ▼                                                │
+│  ┌────────────────────────────────────────────────────────────────┐        │
+│  │                      ELMModel                                   │        │
+│  │  ┌──────────────────────────────────────────────────────────┐  │        │
+│  │  │  E_0: Token Embeddings (Qwen3-4B-Instruct) [冻结]       │  │        │
+│  │  │  E_A: MLP Adapter (~21M params)           [可训练 ✓]   │  │        │
+│  │  │  M_0: Transformer Layers (~4B params)     [冻结]        │  │        │
+│  │  └──────────────────────────────────────────────────────────┘  │        │
+│  └─────────────────────────┬──────────────────────────────────────┘        │
+│                            │                                                │
+│                            ▼                                                │
+│  ┌────────────────────────────────────────────────────────────────┐        │
+│  │                    ELMTrainer                                   │        │
+│  │  - BFloat16 混合精度                                            │        │
+│  │  - 梯度累积（batch=16 × accum=2 = 有效批次 32）                │        │
+│  │  - AdamW 优化器（仅 Adapter 参数）                             │        │
+│  │  - Warmup + 线性衰减调度                                       │        │
+│  │  - 梯度裁剪（max_norm=1.0）                                     │        │
+│  └─────────────────────────┬──────────────────────────────────────┘        │
+│                            │                                                │
+│                            ▼                                                │
+│  ┌──────────────┐    ┌──────────────┐                                      │
+│  │AdapterCheckpoint  │  Evaluation   │                                      │
+│  │  (每 1000 步)    │  (每 500 步)  │                                      │
+│  └──────┬───────┘    └──────────────┘                                      │
+│         │                                                                   │
+│         ▼                                                                   │
+│  ┌──────────────┐                                                          │
+│  │ Checkpoints  │                                                          │
+│  │adapter_best  │                                                          │
+│  │.safetensors  │                                                          │
+│  └──────────────┘                                                          │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 4.2 任务执行流程
+### 5.2 任务执行流程
 
 ```
 对于每个嵌入 i：
@@ -1870,9 +2349,9 @@ async def _process_pair_task_async(
 
 ---
 
-## 5. 输出格式说明
+## 6. 输出格式说明
 
-### 5.1 Parquet 文件结构 (Data_Preparation 输出)
+### 6.1 Parquet 文件结构 (Data_Preparation 输出)
 
 文件位置：`data/wikitext2_processed/{split}.parquet`
 
@@ -1891,7 +2370,7 @@ train_0      | The tower is 324 metres tall...        | 156         | 892
 train_1      | In 1889, the structure was...          | 203         | 1156
 ```
 
-### 5.2 SafeTensors 嵌入格式 (Data_Preparation 输出)
+### 6.2 SafeTensors 嵌入格式 (Data_Preparation 输出)
 
 文件位置：`data/embeddings/{split}_embeddings.safetensors`
 
@@ -1909,7 +2388,7 @@ train_1      | In 1889, the structure was...          | 203         | 1156
 }
 ```
 
-### 5.3 JSONL 合成数据格式 (Data_Synthesis 输出)
+### 6.3 JSONL 合成数据格式 (Data_Synthesis 输出)
 
 文件位置：`data/synthesis/{split}_synthesis.jsonl`
 
@@ -1963,11 +2442,59 @@ train_1      | In 1889, the structure was...          | 203         | 1156
 }
 ```
 
+### 6.4 Adapter 检查点格式 (Training 输出)
+
+文件位置：`data/checkpoints/`
+
+#### Adapter 权重文件
+
+```
+adapter_step_1000.safetensors    # 第 1000 步的 Adapter 权重
+adapter_step_2000.safetensors    # 第 2000 步的 Adapter 权重
+adapter_best.safetensors          # 验证集最佳模型
+adapter_step_final.safetensors   # 最终模型
+```
+
+**文件大小**：~84 MB（21M 参数 × 4 字节/参数）
+
+#### 训练状态文件
+
+```
+checkpoint_step_1000.pt           # 优化器/调度器状态
+checkpoint_step_2000.pt
+checkpoint_step_final.pt
+```
+
+包含内容：
+```python
+{
+    "optimizer_state_dict": {...},    # AdamW 状态
+    "scheduler_state_dict": {...},    # 学习率调度器状态
+    "global_step": 1000,               # 全局步数
+    "epoch": 0,                        # 当前轮次
+    "best_val_loss": 2.34,             # 最佳验证损失
+    "timestamp": "2025-12-12T10:30:00" # 保存时间
+}
+```
+
+#### 最佳模型元数据
+
+文件：`best_model_meta.json`
+
+```json
+{
+    "val_loss": 2.234,
+    "global_step": 1500,
+    "epoch": 1,
+    "timestamp": "2025-12-12T12:45:30"
+}
+```
+
 ---
 
-## 6. 运行指南
+## 7. 运行指南
 
-### 6.1 环境配置
+### 7.1 环境配置
 
 ```bash
 # 1. 克隆项目
@@ -1986,7 +2513,7 @@ pip install -e .
 export OPENROUTER_API_KEY="your-api-key"
 ```
 
-### 6.2 运行数据准备阶段
+### 7.2 运行数据准备阶段
 
 ```bash
 # 完整流水线
@@ -2007,7 +2534,7 @@ python Data_Preparation/scripts/run_embedding_only.py \
     --batch-size 4
 ```
 
-### 6.3 运行数据合成阶段
+### 7.3 运行数据合成阶段
 
 #### 基本用法
 
@@ -2063,7 +2590,112 @@ python scripts/update_checkpoint.py
 python Data_Synthesis/scripts/run_synthesis.py --splits train
 ```
 
-### 6.4 常见问题排查
+### 7.4 运行模型训练阶段
+
+#### 环境设置
+
+```bash
+# 1. 创建训练环境（与数据处理环境分离）
+cd Training
+conda env create -f environment.yml
+conda activate elm-training
+
+# 2. 验证数据文件存在
+ls ../data/embeddings/train_embeddings.safetensors
+ls ../data/embeddings/val_embeddings.safetensors
+ls ../data/synthesis/train_synthesis.jsonl
+ls ../data/synthesis/val_synthesis.jsonl
+```
+
+#### 基本训练
+
+```bash
+# 默认配置训练（推荐）
+python scripts/train.py
+
+# 完整参数示例
+python scripts/train.py \
+    --batch-size 16 \
+    --grad-accum 2 \
+    --epochs 3 \
+    --lr 1e-4 \
+    --warmup-steps 1000 \
+    --hidden-dim 4096 \
+    --eval-steps 500 \
+    --save-steps 1000
+```
+
+#### 启用 W&B 日志
+
+```bash
+python scripts/train.py \
+    --wandb \
+    --wandb-project elm-adapter-training \
+    --wandb-run-name exp-baseline
+```
+
+#### 从检查点恢复
+
+```bash
+# 自动从最新检查点恢复
+python scripts/train.py --resume ../data/checkpoints/checkpoint_step_1000.pt
+
+# 或指定 Adapter 文件
+python scripts/train.py --resume ../data/checkpoints/adapter_step_1000.safetensors
+```
+
+#### 调整训练参数
+
+```bash
+# 更大的 Adapter（更多参数）
+python scripts/train.py --hidden-dim 8192
+
+# 更小的学习率
+python scripts/train.py --lr 5e-5
+
+# 更长的 warmup
+python scripts/train.py --warmup-steps 2000
+
+# 限制最大步数
+python scripts/train.py --max-steps 5000
+```
+
+#### 评估已训练模型
+
+```bash
+# 在测试集上评估
+python scripts/evaluate.py \
+    --checkpoint ../data/checkpoints/adapter_best.safetensors \
+    --split test \
+    --num-samples 10
+```
+
+#### 预期训练时间
+
+| 硬件 | 批次大小 | 有效批次 | 每步耗时 | 每轮耗时 | 3 轮总耗时 |
+|------|---------|---------|---------|---------|-----------|
+| A100 40GB | 16 | 32 | ~1.5s | ~1.5h | ~4.5h |
+| A6000 48GB | 16 | 32 | ~2.0s | ~2.0h | ~6.0h |
+| RTX 3090 24GB | 8 | 32 | ~1.8s | ~1.8h | ~5.4h |
+
+（基于 train_synthesis.jsonl ~77,000 样本）
+
+#### 监控训练
+
+训练过程中监控的关键指标：
+
+```
+Step 500: val_loss = 2.456, best_val_loss = 2.456
+Step 1000: val_loss = 2.234, best_val_loss = 2.234  ← 改进
+Step 1500: val_loss = 2.189, best_val_loss = 2.189  ← 改进
+Step 2000: val_loss = 2.201, best_val_loss = 2.189  ← 开始过拟合
+```
+
+**何时停止训练**：
+- 验证损失连续 3-5 次评估不再下降
+- 或达到目标轮数（默认 3 轮）
+
+### 7.5 常见问题排查
 
 #### CUDA 显存不足
 
@@ -2102,7 +2734,50 @@ python Data_Synthesis/scripts/run_synthesis.py --requests-per-second 0.3
 - 修改 prompt 模板
 - 检查质量过滤设置
 
-### 6.5 预期输出规模
+#### 训练相关问题
+
+##### 找不到合成数据文件
+
+```bash
+# 错误：FileNotFoundError: val_synthesis.jsonl not found
+# 解决：生成验证集合成数据
+cd ../Data_Synthesis
+python scripts/run_synthesis.py --splits val
+```
+
+##### 显存不足（即使是 40GB）
+
+```bash
+# 解决方案 1：减小批次大小
+python scripts/train.py --batch-size 8 --grad-accum 4
+
+# 解决方案 2：禁用梯度检查点（更快但显存更多）
+python scripts/train.py --no-grad-checkpoint
+
+# 解决方案 3：使用更小的 Adapter
+python scripts/train.py --hidden-dim 2048
+```
+
+##### 训练损失不下降
+
+可能原因：
+1. 学习率过高/过低 → 调整 `--lr`
+2. Warmup 不足 → 增加 `--warmup-steps`
+3. 数据质量问题 → 检查合成数据
+
+```bash
+# 尝试更保守的学习率
+python scripts/train.py --lr 5e-5 --warmup-steps 2000
+```
+
+##### W&B 无法连接
+
+```bash
+# 离线模式训练（不记录到 W&B）
+python scripts/train.py  # 不加 --wandb 参数
+```
+
+### 7.6 预期输出规模
 
 | 阶段 | 输出 | 大小 |
 |------|------|------|
@@ -2117,11 +2792,16 @@ python Data_Synthesis/scripts/run_synthesis.py --requests-per-second 0.3
 | test | 603 | ~29,000 |
 | **总计** | **6,017** | **~289,000** |
 
+| 检查点类型 | 数量 | 总大小 |
+|-----------|------|-------|
+| 训练中检查点 | ~10 个 | ~840 MB |
+| 最佳模型 | 1 个 | ~84 MB |
+
 ---
 
-## 7. 项目级工具脚本
+## 8. 项目级工具脚本
 
-### 7.1 按任务类型排序 (scripts/sort_by_task_type.py)
+### 8.1 按任务类型排序 (scripts/sort_by_task_type.py)
 
 此脚本用于按任务类型对生成的 JSONL 文件进行排序，便于分析和组织数据。
 
@@ -2184,7 +2864,7 @@ Task type counts:
 Sorted records written to: data/synthesis/train_synthesis.jsonl
 ```
 
-### 7.2 更新检查点 (scripts/update_checkpoint.py)
+### 8.2 更新检查点 (scripts/update_checkpoint.py)
 
 此脚本用于根据实际生成的 JSONL 数据更新检查点文件，确保检查点状态与实际数据一致。
 
@@ -2266,12 +2946,13 @@ New checkpoint:
 
 ---
 
-## 8. 总结
+## 9. 总结
 
-ELM 项目是一个完整的数据处理流水线，包含两个主要阶段：
+ELM 项目是一个完整的数据处理和模型训练流水线，包含三个主要阶段：
 
 1. **数据准备阶段**：从 WikiText-2 提取高质量文本，生成 Qwen3-Embedding-4B 嵌入向量
 2. **数据合成阶段**：使用 Qwen3-30B-A3B-Instruct-2507 生成 16 种任务类型的多样化训练数据
+3. **模型训练阶段**：训练 MLP Adapter 学习嵌入到 LLM token 空间的映射
 
 ### 关键技术特点
 
@@ -2289,6 +2970,15 @@ ELM 项目是一个完整的数据处理流水线，包含两个主要阶段：
 - **异步处理**：批量并发 API 调用，速率限制保护
 - **性能分析**：实时追踪 API 延迟、吞吐量、拒绝率等指标
 - **验证机制**：全面的输出质量检查清单
+
+#### 模型训练阶段
+- **参数高效训练**：仅训练 ~21M Adapter，冻结 ~4B LLM
+- **混合精度**：BFloat16 自动混合精度训练
+- **梯度优化**：梯度累积 + 梯度裁剪 + 梯度检查点
+- **学习率调度**：Warmup + 线性衰减
+- **检查点管理**：只保存轻量 Adapter 权重，支持断点续传
+- **验证监控**：定期评估验证集，保存最佳模型
+- **W&B 集成**：可选的实验追踪和可视化
 
 #### 工具脚本
 - **数据整理**：按任务类型排序 JSONL 文件

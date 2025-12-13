@@ -3057,3 +3057,1753 @@ Processing task: questions (async mode)
 2025-12-11 13:09:01,652 - synthesis_pipeline.checkpoint - INFO - Loaded checkpoint: 3318 completed
 2025-12-11 13:10:02,129 - synthesis_pipeline - WARNING - 
 Pipeline interrupted by user
+2025-12-12 19:36:16,445 - synthesis_pipeline - INFO - ================================================================================
+2025-12-12 19:36:16,446 - synthesis_pipeline - INFO - ELM Data Synthesis Pipeline
+2025-12-12 19:36:16,446 - synthesis_pipeline - INFO - ================================================================================
+2025-12-12 19:36:16,511 - synthesis_pipeline.checkpoint - INFO - Loaded 80172 existing hashes
+2025-12-12 19:36:16,527 - synthesis_pipeline.generator - INFO - ================================================================================
+2025-12-12 19:36:16,527 - synthesis_pipeline.generator - INFO - Generating synthetic data for test split (async mode)
+2025-12-12 19:36:16,527 - synthesis_pipeline.generator - INFO - ================================================================================
+2025-12-12 19:36:16,527 - synthesis_pipeline.generator - INFO - Loading test dataset...
+2025-12-12 19:36:16,580 - synthesis_pipeline.generator - INFO - Loaded 603 samples
+2025-12-12 19:36:16,581 - synthesis_pipeline.knn_index - INFO - Building k-NN index for 603 embeddings...
+2025-12-12 19:36:16,588 - synthesis_pipeline.knn_index - INFO - Index built successfully with 603 vectors
+2025-12-12 19:36:16,588 - synthesis_pipeline.generator - INFO - 
+Processing task: keywords (async mode)
+2025-12-12 19:46:49,148 - synthesis_pipeline.generator - INFO - 
+Processing task: category (async mode)
+2025-12-12 19:57:10,367 - synthesis_pipeline.generator - INFO - 
+Processing task: questions (async mode)
+2025-12-12 20:07:23,389 - synthesis_pipeline.generator - INFO - 
+Processing task: summary (async mode)
+2025-12-12 20:17:37,192 - synthesis_pipeline.generator - INFO - 
+Processing task: describe (async mode)
+2025-12-12 20:33:12,646 - synthesis_pipeline.generator - INFO - 
+Processing task: explain_beginner (async mode)
+2025-12-12 20:44:20,088 - synthesis_pipeline.generator - INFO - 
+Processing task: explain_expert (async mode)
+2025-12-12 20:54:04,136 - synthesis_pipeline - INFO - ================================================================================
+2025-12-12 20:54:04,137 - synthesis_pipeline - INFO - ELM Data Synthesis Pipeline
+2025-12-12 20:54:04,137 - synthesis_pipeline - INFO - ================================================================================
+2025-12-12 20:54:04,200 - synthesis_pipeline.checkpoint - INFO - Loaded 83440 existing hashes
+2025-12-12 20:54:04,210 - synthesis_pipeline.generator - INFO - ================================================================================
+2025-12-12 20:54:04,210 - synthesis_pipeline.generator - INFO - Generating synthetic data for val split (async mode)
+2025-12-12 20:54:04,210 - synthesis_pipeline.generator - INFO - ================================================================================
+2025-12-12 20:54:04,210 - synthesis_pipeline.generator - INFO - Loading val dataset...
+2025-12-12 20:54:04,231 - synthesis_pipeline.generator - INFO - Loaded 601 samples
+2025-12-12 20:54:04,232 - synthesis_pipeline.knn_index - INFO - Building k-NN index for 601 embeddings...
+2025-12-12 20:54:04,238 - synthesis_pipeline.knn_index - INFO - Index built successfully with 601 vectors
+2025-12-12 20:54:04,239 - synthesis_pipeline.generator - INFO - 
+Processing task: keywords (async mode)
+2025-12-12 21:00:39,892 - synthesis_pipeline.generator - INFO - 
+Processing task: related_topics (async mode)
+2025-12-12 21:04:11,708 - synthesis_pipeline.generator - INFO - 
+Processing task: category (async mode)
+2025-12-12 21:11:00,221 - synthesis_pipeline.generator - INFO - 
+Processing task: characteristics_pos (async mode)
+2025-12-12 21:14:24,835 - synthesis_pipeline.generator - INFO - 
+Processing task: questions (async mode)
+2025-12-12 21:21:23,589 - synthesis_pipeline.generator - INFO - 
+Processing task: characteristics_neg (async mode)
+2025-12-12 21:24:35,201 - synthesis_pipeline.generator - INFO - 
+Processing task: summary (async mode)
+2025-12-12 21:34:12,103 - synthesis_pipeline.generator - INFO - 
+Processing task: style_academic (async mode)
+2025-12-12 21:34:43,608 - synthesis_pipeline.generator - INFO - 
+Processing task: describe (async mode)
+2025-12-12 21:44:50,744 - synthesis_pipeline.generator - INFO - 
+Processing task: style_casual (async mode)
+2025-12-12 21:47:00,774 - synthesis_pipeline.generator - INFO - 
+Processing task: explain_beginner (async mode)
+2025-12-12 21:55:24,164 - synthesis_pipeline.generator - INFO - 
+Processing task: counterfactual (async mode)
+2025-12-12 21:57:17,474 - synthesis_pipeline.generator - INFO - 
+Processing task: explain_expert (async mode)
+2025-12-12 22:05:37,895 - synthesis_pipeline.generator - INFO - 
+Processing pair task: compare (async mode)
+2025-12-12 22:07:49,805 - synthesis_pipeline.generator - INFO - 
+Processing task: related_topics (async mode)
+2025-12-12 22:18:13,540 - synthesis_pipeline.generator - INFO - 
+Processing task: characteristics_pos (async mode)
+2025-12-12 22:28:45,510 - synthesis_pipeline.generator - INFO - 
+Processing task: characteristics_neg (async mode)
+2025-12-12 22:37:21,689 - synthesis_pipeline.generator - INFO - 
+Processing pair task: hypothetical (async mode)
+2025-12-12 22:39:19,447 - synthesis_pipeline.generator - INFO - 
+Processing task: style_academic (async mode)
+2025-12-12 22:49:53,026 - synthesis_pipeline.generator - INFO - 
+Processing task: style_casual (async mode)
+2025-12-12 22:59:04,808 - synthesis_pipeline.output_writer - INFO - Wrote 9932 total records to /home/benz/coding_project/elm/data/synthesis/test_synthesis.jsonl
+2025-12-12 22:59:04,810 - synthesis_pipeline.profiler - INFO - 
+================================================================================
+2025-12-12 22:59:04,810 - synthesis_pipeline.profiler - INFO - PERFORMANCE SUMMARY
+2025-12-12 22:59:04,810 - synthesis_pipeline.profiler - INFO - ================================================================================
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO - 
+batch_compare:
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Count:      38
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Total:      5575.65s
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Avg:        146727.70ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Median:     142237.56ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   P95:        203318.43ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Min:        50442.20ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Max:        250740.28ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO - 
+api_call_compare:
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Count:      38
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Total:      5574.91s
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Avg:        146708.20ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Median:     142215.27ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   P95:        203276.92ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Min:        50424.67ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Max:        250725.92ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO - 
+batch_hypothetical:
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Count:      25
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Total:      3899.80s
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Avg:        155991.81ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Median:     153173.72ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   P95:        224335.49ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Min:        37403.22ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO -   Max:        225419.82ms
+2025-12-12 22:59:04,811 - synthesis_pipeline.profiler - INFO - 
+api_call_hypothetical:
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Count:      25
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Total:      3898.96s
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Avg:        155958.42ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Median:     153152.28ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   P95:        224311.07ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Min:        37399.13ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Max:        225398.38ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO - 
+batch_explain_expert:
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Total:      2754.58s
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Avg:        211890.64ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Median:     203596.74ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   P95:        339120.03ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Min:        141061.36ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Max:        339120.03ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO - 
+api_call_explain_expert:
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Total:      2754.35s
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Avg:        211873.43ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Median:     203582.08ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   P95:        339101.48ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Min:        141042.38ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Max:        339101.48ms
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO - 
+batch_describe:
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Total:      2688.63s
+2025-12-12 22:59:04,812 - synthesis_pipeline.profiler - INFO -   Avg:        206817.69ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Median:     166683.78ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   P95:        379166.10ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Min:        107112.37ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Max:        379166.10ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO - 
+api_call_describe:
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Total:      2688.42s
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Avg:        206801.37ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Median:     166668.09ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   P95:        379150.03ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Min:        107095.53ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Max:        379150.03ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO - 
+batch_characteristics_neg:
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Total:      2288.12s
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Avg:        176009.21ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Median:     176101.55ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   P95:        229590.39ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Min:        108239.62ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Max:        229590.39ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO - 
+api_call_characteristics_neg:
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Total:      2287.89s
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Avg:        175991.71ms
+2025-12-12 22:59:04,813 - synthesis_pipeline.profiler - INFO -   Median:     176099.06ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   P95:        229573.16ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Min:        108223.67ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Max:        229573.16ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO - 
+batch_explain_beginner:
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Total:      1939.07s
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Avg:        149159.37ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Median:     155986.03ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   P95:        207174.18ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Min:        5250.18ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Max:        207174.18ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO - 
+api_call_explain_beginner:
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Total:      1938.86s
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Avg:        149142.91ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Median:     155970.85ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   P95:        207155.57ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Min:        5248.34ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Max:        207155.57ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO - 
+batch_style_academic:
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Total:      1880.51s
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Avg:        144654.82ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   Median:     151789.47ms
+2025-12-12 22:59:04,814 - synthesis_pipeline.profiler - INFO -   P95:        205310.72ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Min:        50132.55ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Max:        205310.72ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO - 
+api_call_style_academic:
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Total:      1880.31s
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Avg:        144639.60ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Median:     151773.04ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   P95:        205297.58ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Min:        50131.14ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Max:        205297.58ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO - 
+batch_keywords:
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Total:      1874.16s
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Avg:        144165.91ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Median:     150298.68ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   P95:        210229.18ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Min:        63339.50ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Max:        210229.18ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO - 
+api_call_keywords:
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Total:      1874.04s
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Avg:        144156.64ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Median:     150284.14ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   P95:        210222.50ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Min:        63331.98ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Max:        210222.50ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO - 
+batch_category:
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Total:      1857.67s
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Avg:        142897.97ms
+2025-12-12 22:59:04,815 - synthesis_pipeline.profiler - INFO -   Median:     154578.57ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   P95:        162393.36ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Min:        3615.53ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Max:        162393.36ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO - 
+api_call_category:
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Total:      1857.41s
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Avg:        142877.98ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Median:     154543.34ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   P95:        162386.32ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Min:        3613.27ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Max:        162386.32ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO - 
+batch_related_topics:
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Total:      1848.89s
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Avg:        142222.55ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Median:     151767.58ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   P95:        167816.92ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Min:        9876.96ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Max:        167816.92ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO - 
+batch_style_casual:
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Total:      1848.80s
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Avg:        142215.68ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Median:     150819.14ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   P95:        175469.66ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Min:        9894.94ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Max:        175469.66ms
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO - 
+api_call_related_topics:
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Total:      1848.72s
+2025-12-12 22:59:04,816 - synthesis_pipeline.profiler - INFO -   Avg:        142209.57ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Median:     151752.67ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   P95:        167802.71ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Min:        9873.67ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Max:        167802.71ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO - 
+api_call_style_casual:
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Total:      1848.64s
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Avg:        142202.87ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Median:     150806.49ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   P95:        175458.46ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Min:        9894.03ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Max:        175458.46ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO - 
+batch_characteristics_pos:
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Total:      1840.90s
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Avg:        141607.85ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Median:     148528.64ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   P95:        170208.58ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Min:        12564.43ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Max:        170208.58ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO - 
+api_call_characteristics_pos:
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Total:      1840.71s
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Avg:        141593.23ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Median:     148513.34ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   P95:        170192.65ms
+2025-12-12 22:59:04,817 - synthesis_pipeline.profiler - INFO -   Min:        12562.83ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Max:        170192.65ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO - 
+batch_questions:
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Total:      1835.33s
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Avg:        141179.23ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Median:     150534.87ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   P95:        162410.26ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Min:        4963.35ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Max:        162410.26ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO - 
+api_call_questions:
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Total:      1835.25s
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Avg:        141173.20ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Median:     150528.80ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   P95:        162404.27ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Min:        4960.64ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Max:        162404.27ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO - 
+batch_counterfactual:
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Total:      1834.06s
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Avg:        141081.86ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Median:     152433.03ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   P95:        181051.80ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Min:        8082.43ms
+2025-12-12 22:59:04,818 - synthesis_pipeline.profiler - INFO -   Max:        181051.80ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO - 
+api_call_counterfactual:
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Total:      1833.81s
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Avg:        141062.04ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Median:     152419.02ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   P95:        181036.59ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Min:        8079.17ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Max:        181036.59ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO - 
+batch_summary:
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Total:      1833.09s
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Avg:        141006.68ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Median:     152451.09ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   P95:        155826.63ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Min:        7588.89ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Max:        155826.63ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO - 
+api_call_summary:
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Total:      1832.98s
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Avg:        140998.47ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Median:     152445.54ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   P95:        155818.19ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Min:        7584.13ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Max:        155818.19ms
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO - 
+quality_filter_compare:
+2025-12-12 22:59:04,819 - synthesis_pipeline.profiler - INFO -   Count:      1809
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Total:      0.43s
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Avg:        0.24ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Median:     0.22ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   P95:        0.68ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Max:        2.92ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO - 
+quality_filter_hypothetical:
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Count:      1206
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Total:      0.39s
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Avg:        0.32ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Median:     0.26ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   P95:        0.59ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Min:        0.17ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Max:        3.51ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO - 
+checkpoint_hypothetical:
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Count:      12
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Total:      0.31s
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Avg:        26.15ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Median:     24.89ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   P95:        31.29ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Min:        24.68ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Max:        31.29ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO - 
+quality_filter_describe:
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Total:      0.18s
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Avg:        0.30ms
+2025-12-12 22:59:04,820 - synthesis_pipeline.profiler - INFO -   Median:     0.21ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   P95:        0.68ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Min:        0.02ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Max:        2.89ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO - 
+quality_filter_explain_expert:
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Total:      0.18s
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Avg:        0.30ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Median:     0.21ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   P95:        0.70ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Min:        0.02ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Max:        2.18ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO - 
+quality_filter_characteristics_neg:
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Total:      0.17s
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Avg:        0.28ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Median:     0.23ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   P95:        0.56ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Min:        0.02ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Max:        1.52ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO - 
+quality_filter_counterfactual:
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Total:      0.16s
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Avg:        0.27ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   Median:     0.21ms
+2025-12-12 22:59:04,821 - synthesis_pipeline.profiler - INFO -   P95:        0.59ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Min:        0.03ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Max:        2.07ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO - 
+quality_filter_explain_beginner:
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Total:      0.16s
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Avg:        0.26ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Median:     0.22ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   P95:        0.55ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Min:        0.02ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Max:        2.06ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO - 
+quality_filter_characteristics_pos:
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Total:      0.16s
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Avg:        0.26ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Median:     0.23ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   P95:        0.46ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Min:        0.02ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Max:        1.95ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO - 
+checkpoint_category:
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Count:      7
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Total:      0.16s
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Avg:        22.50ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Median:     22.68ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   P95:        23.59ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Min:        20.15ms
+2025-12-12 22:59:04,822 - synthesis_pipeline.profiler - INFO -   Max:        23.59ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO - 
+quality_filter_style_academic:
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Total:      0.15s
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Avg:        0.24ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Median:     0.22ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   P95:        0.45ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Min:        0.02ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Max:        1.21ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO - 
+quality_filter_related_topics:
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Total:      0.14s
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Avg:        0.23ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Median:     0.20ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   P95:        0.43ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Max:        1.09ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO - 
+quality_filter_style_casual:
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Total:      0.13s
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Avg:        0.22ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Median:     0.20ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   P95:        0.42ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Max:        2.13ms
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO - 
+checkpoint_compare:
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Count:      5
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Total:      0.13s
+2025-12-12 22:59:04,823 - synthesis_pipeline.profiler - INFO -   Avg:        25.80ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Median:     24.28ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   P95:        28.53ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Min:        24.12ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Max:        28.53ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO - 
+quality_filter_category:
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Total:      0.10s
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Avg:        0.17ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Median:     0.12ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   P95:        0.44ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Min:        0.04ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Max:        1.17ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO - 
+quality_filter_keywords:
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Total:      0.09s
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Avg:        0.15ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Median:     0.11ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   P95:        0.38ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Max:        1.56ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO - 
+checkpoint_counterfactual:
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Count:      3
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Total:      0.08s
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Avg:        27.99ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   Median:     27.16ms
+2025-12-12 22:59:04,824 - synthesis_pipeline.profiler - INFO -   P95:        30.62ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Min:        26.19ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Max:        30.62ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO - 
+quality_filter_summary:
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Total:      0.08s
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Avg:        0.14ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Median:     0.09ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   P95:        0.39ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Max:        1.42ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO - 
+quality_filter_questions:
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Total:      0.06s
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Avg:        0.10ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Median:     0.06ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   P95:        0.34ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Max:        0.91ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO - 
+checkpoint_characteristics_neg:
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Count:      2
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Total:      0.05s
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Avg:        26.23ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Median:     26.23ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   P95:        27.25ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Min:        25.21ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Max:        27.25ms
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO - 
+checkpoint_explain_beginner:
+2025-12-12 22:59:04,825 - synthesis_pipeline.profiler - INFO -   Count:      2
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Total:      0.05s
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Avg:        25.34ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Median:     25.34ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   P95:        25.46ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Min:        25.22ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Max:        25.46ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO - 
+checkpoint_style_academic:
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Count:      2
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Total:      0.05s
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Avg:        24.67ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Median:     24.67ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   P95:        25.76ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Min:        23.57ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Max:        25.76ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO - 
+checkpoint_keywords:
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Total:      0.04s
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Avg:        38.11ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Median:     38.11ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   P95:        38.11ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Min:        38.11ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Max:        38.11ms
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO - 
+checkpoint_explain_expert:
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Total:      0.04s
+2025-12-12 22:59:04,826 - synthesis_pipeline.profiler - INFO -   Avg:        35.63ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Median:     35.63ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   P95:        35.63ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Min:        35.63ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Max:        35.63ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO - 
+io_write_hypothetical:
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Count:      25
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Total:      0.04s
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Avg:        1.41ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Median:     1.39ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   P95:        2.52ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Max:        2.60ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO - 
+io_write_compare:
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Count:      38
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Total:      0.03s
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Avg:        0.85ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   P95:        2.13ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Max:        2.14ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO - 
+checkpoint_style_casual:
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Total:      0.03s
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Avg:        31.42ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Median:     31.42ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   P95:        31.42ms
+2025-12-12 22:59:04,827 - synthesis_pipeline.profiler - INFO -   Min:        31.42ms
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Max:        31.42ms
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO - 
+io_write_explain_expert:
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Total:      0.03s
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Avg:        2.08ms
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Median:     1.27ms
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   P95:        11.38ms
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Max:        11.38ms
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO - 
+checkpoint_characteristics_pos:
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Total:      0.03s
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Avg:        26.94ms
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Median:     26.94ms
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   P95:        26.94ms
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Min:        26.94ms
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Max:        26.94ms
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO - 
+checkpoint_questions:
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Total:      0.03s
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Avg:        26.92ms
+2025-12-12 22:59:04,828 - synthesis_pipeline.profiler - INFO -   Median:     26.92ms
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   P95:        26.92ms
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   Min:        26.92ms
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   Max:        26.92ms
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO - 
+checkpoint_describe:
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   Total:      0.03s
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   Avg:        25.90ms
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   Median:     25.90ms
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   P95:        25.90ms
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   Min:        25.90ms
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   Max:        25.90ms
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO - 
+checkpoint_summary:
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   Total:      0.03s
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   Avg:        25.79ms
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   Median:     25.79ms
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   P95:        25.79ms
+2025-12-12 22:59:04,829 - synthesis_pipeline.profiler - INFO -   Min:        25.79ms
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Max:        25.79ms
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO - 
+checkpoint_related_topics:
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Total:      0.03s
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Avg:        25.11ms
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Median:     25.11ms
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   P95:        25.11ms
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Min:        25.11ms
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Max:        25.11ms
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO - 
+io_write_keywords:
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Total:      0.02s
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Avg:        1.32ms
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Median:     0.67ms
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   P95:        10.86ms
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Max:        10.86ms
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO - 
+io_write_counterfactual:
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Total:      0.02s
+2025-12-12 22:59:04,830 - synthesis_pipeline.profiler - INFO -   Avg:        1.27ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Median:     1.24ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   P95:        2.65ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Max:        2.65ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO - 
+io_write_describe:
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Total:      0.02s
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Avg:        1.19ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Median:     1.27ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   P95:        2.76ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Max:        2.76ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO - 
+io_write_characteristics_neg:
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Total:      0.02s
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Avg:        1.18ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   P95:        2.79ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO -   Max:        2.79ms
+2025-12-12 22:59:04,831 - synthesis_pipeline.profiler - INFO - 
+io_write_characteristics_pos:
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Total:      0.02s
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Avg:        1.16ms
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Median:     1.28ms
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   P95:        2.23ms
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Max:        2.23ms
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO - 
+io_write_style_academic:
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Avg:        1.12ms
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Median:     1.22ms
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   P95:        2.39ms
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Max:        2.39ms
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO - 
+io_write_explain_beginner:
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,832 - synthesis_pipeline.profiler - INFO -   Avg:        1.09ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Median:     1.12ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   P95:        2.53ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Max:        2.53ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO - 
+io_write_style_casual:
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Avg:        1.07ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Median:     1.08ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   P95:        2.29ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Max:        2.29ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO - 
+io_write_related_topics:
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Avg:        1.04ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Median:     1.14ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   P95:        2.36ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO -   Max:        2.36ms
+2025-12-12 22:59:04,833 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_compare:
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Count:      1294
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Max:        0.23ms
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_hypothetical:
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Count:      1206
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Max:        0.20ms
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO - 
+io_write_summary:
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Avg:        0.62ms
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   Median:     0.48ms
+2025-12-12 22:59:04,834 - synthesis_pipeline.profiler - INFO -   P95:        2.36ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Max:        2.36ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_explain_expert:
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Max:        2.05ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO - 
+io_write_category:
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Avg:        0.58ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Median:     0.63ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   P95:        0.74ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Max:        0.74ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_counterfactual:
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Count:      602
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,835 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Max:        0.25ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_style_casual:
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Count:      596
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Max:        0.27ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_characteristics_pos:
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Count:      602
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Max:        0.11ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_describe:
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Count:      589
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,836 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Max:        0.07ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_characteristics_neg:
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Count:      571
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Max:        0.05ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_related_topics:
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Count:      593
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   P95:        0.01ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Max:        0.24ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_explain_beginner:
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Count:      583
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Max:        0.08ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_style_academic:
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Count:      599
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,837 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Max:        0.08ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_category:
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Count:      603
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Median:     0.00ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Max:        0.07ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_summary:
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Count:      594
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Median:     0.00ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Max:        0.07ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_keywords:
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Count:      590
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Median:     0.00ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Max:        0.10ms
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO - 
+io_write_questions:
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-12 22:59:04,838 - synthesis_pipeline.profiler - INFO -   Avg:        0.25ms
+2025-12-12 22:59:04,839 - synthesis_pipeline.profiler - INFO -   Median:     0.00ms
+2025-12-12 22:59:04,839 - synthesis_pipeline.profiler - INFO -   P95:        0.72ms
+2025-12-12 22:59:04,839 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,839 - synthesis_pipeline.profiler - INFO -   Max:        0.72ms
+2025-12-12 22:59:04,839 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_questions:
+2025-12-12 22:59:04,839 - synthesis_pipeline.profiler - INFO -   Count:      309
+2025-12-12 22:59:04,839 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-12 22:59:04,839 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-12 22:59:04,839 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-12 22:59:04,839 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-12 22:59:04,839 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-12 22:59:04,839 - synthesis_pipeline.profiler - INFO -   Max:        0.05ms
+2025-12-12 22:59:04,839 - synthesis_pipeline.profiler - INFO - 
+================================================================================
+2025-12-12 22:59:04,839 - synthesis_pipeline.generator - INFO - 
+test split completed:
+2025-12-12 22:59:04,839 - synthesis_pipeline.generator - INFO -   Total generated: 9932
+2025-12-12 22:59:04,839 - synthesis_pipeline.generator - INFO -   Total rejected: 922
+2025-12-12 22:59:04,839 - synthesis_pipeline.generator - INFO -   Coverage: 14.2 tasks/embedding
+2025-12-12 22:59:04,845 - synthesis_pipeline - INFO - 
+Running post-generation validation...
+2025-12-12 22:59:05,114 - synthesis_pipeline - INFO - 
+================================================================================
+2025-12-12 22:59:05,114 - synthesis_pipeline - INFO - SYNTHESIS COMPLETE
+2025-12-12 22:59:05,114 - synthesis_pipeline - INFO - ================================================================================
+2025-12-12 22:59:05,114 - synthesis_pipeline - INFO - 
+test:
+2025-12-12 22:59:05,114 - synthesis_pipeline - INFO -   Generated: 9932
+2025-12-12 22:59:05,114 - synthesis_pipeline - INFO -   Rejected: 922
+2025-12-12 22:59:05,114 - synthesis_pipeline - INFO - 
+Total time: 3h 22m 49s
+2025-12-12 23:00:40,011 - synthesis_pipeline.generator - INFO - 
+Processing task: counterfactual (async mode)
+2025-12-12 23:16:25,548 - synthesis_pipeline.generator - INFO - 
+Processing pair task: compare (async mode)
+2025-12-12 23:58:40,347 - synthesis_pipeline.generator - INFO - 
+Processing pair task: hypothetical (async mode)
+2025-12-13 00:20:55,966 - synthesis_pipeline.output_writer - INFO - Wrote 9891 total records to /home/benz/coding_project/elm/data/synthesis/val_synthesis.jsonl
+2025-12-13 00:20:55,969 - synthesis_pipeline.profiler - INFO - 
+================================================================================
+2025-12-13 00:20:55,969 - synthesis_pipeline.profiler - INFO - PERFORMANCE SUMMARY
+2025-12-13 00:20:55,969 - synthesis_pipeline.profiler - INFO - ================================================================================
+2025-12-13 00:20:55,969 - synthesis_pipeline.profiler - INFO - 
+batch_compare:
+2025-12-13 00:20:55,969 - synthesis_pipeline.profiler - INFO -   Count:      38
+2025-12-13 00:20:55,969 - synthesis_pipeline.profiler - INFO -   Total:      7484.17s
+2025-12-13 00:20:55,969 - synthesis_pipeline.profiler - INFO -   Avg:        196951.85ms
+2025-12-13 00:20:55,969 - synthesis_pipeline.profiler - INFO -   Median:     185884.60ms
+2025-12-13 00:20:55,969 - synthesis_pipeline.profiler - INFO -   P95:        325192.35ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Min:        105536.97ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Max:        327784.15ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO - 
+api_call_compare:
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Count:      38
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Total:      7483.42s
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Avg:        196932.23ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Median:     185854.22ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   P95:        325174.49ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Min:        105520.69ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Max:        327770.37ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO - 
+batch_hypothetical:
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Count:      25
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Total:      3951.07s
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Avg:        158042.73ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Median:     156170.67ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   P95:        222723.90ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Min:        51644.00ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Max:        239935.30ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO - 
+api_call_hypothetical:
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Count:      25
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Total:      3950.23s
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Avg:        158009.24ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Median:     156149.00ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   P95:        222676.30ms
+2025-12-13 00:20:55,970 - synthesis_pipeline.profiler - INFO -   Min:        51640.89ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Max:        239911.35ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO - 
+batch_counterfactual:
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Total:      2715.00s
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Avg:        208846.46ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Median:     213183.89ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   P95:        341619.43ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Min:        44858.33ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Max:        341619.43ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO - 
+api_call_counterfactual:
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Total:      2714.72s
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Avg:        208824.92ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Median:     213167.53ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   P95:        341583.99ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Min:        44856.82ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Max:        341583.99ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO - 
+batch_describe:
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Total:      2166.16s
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Avg:        166627.41ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Median:     154766.44ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   P95:        311796.87ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Min:        21433.33ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Max:        311796.87ms
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO - 
+api_call_describe:
+2025-12-13 00:20:55,971 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Total:      2165.95s
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Avg:        166611.33ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Median:     154751.12ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   P95:        311780.61ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Min:        21432.20ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Max:        311780.61ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO - 
+api_call_style_casual:
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Total:      1920.16s
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Avg:        147704.90ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Median:     152457.25ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   P95:        183462.63ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Min:        7890.39ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Max:        183462.63ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO - 
+batch_style_casual:
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Total:      1918.69s
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Avg:        147591.50ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Median:     152472.14ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   P95:        183476.76ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Min:        7891.15ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Max:        183476.76ms
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO - 
+batch_characteristics_neg:
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Total:      1896.14s
+2025-12-13 00:20:55,972 - synthesis_pipeline.profiler - INFO -   Avg:        145856.93ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Median:     150811.15ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   P95:        186808.59ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Min:        76556.67ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Max:        186808.59ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO - 
+api_call_characteristics_neg:
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Total:      1895.94s
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Avg:        145841.37ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Median:     150792.83ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   P95:        186790.43ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Min:        76554.95ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Max:        186790.43ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO - 
+batch_style_academic:
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Total:      1860.41s
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Avg:        143108.49ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Median:     135345.12ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   P95:        190941.87ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Min:        101137.24ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Max:        190941.87ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO - 
+api_call_style_academic:
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Total:      1860.21s
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Avg:        143093.20ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Median:     135330.30ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   P95:        190923.98ms
+2025-12-13 00:20:55,973 - synthesis_pipeline.profiler - INFO -   Min:        101135.56ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Max:        190923.98ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO - 
+batch_characteristics_pos:
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Total:      1856.86s
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Avg:        142835.06ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Median:     150845.65ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   P95:        185802.05ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Min:        6836.14ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Max:        185802.05ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO - 
+api_call_characteristics_pos:
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Total:      1856.65s
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Avg:        142819.13ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Median:     150831.99ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   P95:        185783.21ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Min:        6835.54ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Max:        185783.21ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO - 
+batch_explain_expert:
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Total:      1854.68s
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Avg:        142667.90ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Median:     148719.80ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   P95:        259689.23ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Min:        52267.80ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO -   Max:        259689.23ms
+2025-12-13 00:20:55,974 - synthesis_pipeline.profiler - INFO - 
+api_call_explain_expert:
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Total:      1854.35s
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Avg:        142642.52ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Median:     148701.62ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   P95:        259670.69ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Min:        52266.30ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Max:        259670.69ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO - 
+batch_related_topics:
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Total:      1851.42s
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Avg:        142416.84ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Median:     153365.08ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   P95:        171284.56ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Min:        5445.28ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Max:        171284.56ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO - 
+api_call_related_topics:
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Total:      1851.23s
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Avg:        142402.06ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Median:     153349.41ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   P95:        171269.04ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Min:        5444.62ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Max:        171269.04ms
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO - 
+batch_explain_beginner:
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Total:      1841.75s
+2025-12-13 00:20:55,975 - synthesis_pipeline.profiler - INFO -   Avg:        141672.91ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Median:     153215.78ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   P95:        164351.44ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Min:        47445.57ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Max:        164351.44ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO - 
+api_call_explain_beginner:
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Total:      1841.55s
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Avg:        141657.83ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Median:     153197.41ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   P95:        164336.51ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Min:        47442.78ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Max:        164336.51ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO - 
+batch_category:
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Total:      1835.74s
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Avg:        141210.75ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Median:     151544.10ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   P95:        159891.15ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Min:        5929.15ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Max:        159891.15ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO - 
+api_call_category:
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Total:      1835.53s
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Avg:        141194.25ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Median:     151535.24ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   P95:        159883.85ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Min:        5928.47ms
+2025-12-13 00:20:55,976 - synthesis_pipeline.profiler - INFO -   Max:        159883.85ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO - 
+batch_questions:
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Total:      1821.85s
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Avg:        140142.00ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Median:     151184.51ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   P95:        156417.37ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Min:        6470.59ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Max:        156417.37ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO - 
+api_call_questions:
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Total:      1821.77s
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Avg:        140136.13ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Median:     151179.32ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   P95:        156412.78ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Min:        6470.47ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Max:        156412.78ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO - 
+batch_keywords:
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Total:      1820.83s
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Avg:        140064.10ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Median:     151508.95ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   P95:        159154.02ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Min:        3999.02ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Max:        159154.02ms
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO - 
+batch_summary:
+2025-12-13 00:20:55,977 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Total:      1820.81s
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Avg:        140062.34ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Median:     151252.33ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   P95:        158254.45ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Min:        7409.17ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Max:        158254.45ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO - 
+api_call_summary:
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Total:      1820.70s
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Avg:        140053.69ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Median:     151244.70ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   P95:        158245.55ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Min:        7408.76ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Max:        158245.55ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO - 
+api_call_keywords:
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Total:      1820.69s
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Avg:        140053.01ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Median:     151500.50ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   P95:        159147.35ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Min:        3996.65ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Max:        159147.35ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO - 
+quality_filter_compare:
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Count:      1803
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Total:      0.46s
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Avg:        0.25ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   Median:     0.24ms
+2025-12-13 00:20:55,978 - synthesis_pipeline.profiler - INFO -   P95:        0.67ms
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Max:        3.50ms
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO - 
+quality_filter_hypothetical:
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Count:      1202
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Total:      0.38s
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Avg:        0.31ms
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Median:     0.25ms
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   P95:        0.65ms
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Min:        0.16ms
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Max:        1.94ms
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO - 
+checkpoint_hypothetical:
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Count:      12
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Total:      0.33s
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Avg:        27.46ms
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Median:     26.49ms
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   P95:        38.34ms
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Min:        24.51ms
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Max:        38.34ms
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO - 
+quality_filter_explain_expert:
+2025-12-13 00:20:55,979 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,980 - synthesis_pipeline.profiler - INFO -   Total:      0.18s
+2025-12-13 00:20:55,980 - synthesis_pipeline.profiler - INFO -   Avg:        0.31ms
+2025-12-13 00:20:55,980 - synthesis_pipeline.profiler - INFO -   Median:     0.22ms
+2025-12-13 00:20:55,980 - synthesis_pipeline.profiler - INFO -   P95:        0.81ms
+2025-12-13 00:20:55,980 - synthesis_pipeline.profiler - INFO -   Min:        0.16ms
+2025-12-13 00:20:55,980 - synthesis_pipeline.profiler - INFO -   Max:        2.17ms
+2025-12-13 00:20:55,980 - synthesis_pipeline.profiler - INFO - 
+quality_filter_counterfactual:
+2025-12-13 00:20:55,980 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,980 - synthesis_pipeline.profiler - INFO -   Total:      0.18s
+2025-12-13 00:20:55,980 - synthesis_pipeline.profiler - INFO -   Avg:        0.30ms
+2025-12-13 00:20:55,980 - synthesis_pipeline.profiler - INFO -   Median:     0.23ms
+2025-12-13 00:20:55,981 - synthesis_pipeline.profiler - INFO -   P95:        0.68ms
+2025-12-13 00:20:55,981 - synthesis_pipeline.profiler - INFO -   Min:        0.02ms
+2025-12-13 00:20:55,981 - synthesis_pipeline.profiler - INFO -   Max:        1.92ms
+2025-12-13 00:20:55,981 - synthesis_pipeline.profiler - INFO - 
+quality_filter_describe:
+2025-12-13 00:20:55,981 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,981 - synthesis_pipeline.profiler - INFO -   Total:      0.18s
+2025-12-13 00:20:55,981 - synthesis_pipeline.profiler - INFO -   Avg:        0.30ms
+2025-12-13 00:20:55,981 - synthesis_pipeline.profiler - INFO -   Median:     0.24ms
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO -   P95:        0.65ms
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO -   Min:        0.02ms
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO -   Max:        1.95ms
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO - 
+quality_filter_characteristics_pos:
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO -   Total:      0.17s
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO -   Avg:        0.29ms
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO -   Median:     0.25ms
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO -   P95:        0.56ms
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO -   Max:        2.60ms
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO - 
+quality_filter_characteristics_neg:
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO -   Total:      0.17s
+2025-12-13 00:20:55,982 - synthesis_pipeline.profiler - INFO -   Avg:        0.29ms
+2025-12-13 00:20:55,983 - synthesis_pipeline.profiler - INFO -   Median:     0.25ms
+2025-12-13 00:20:55,983 - synthesis_pipeline.profiler - INFO -   P95:        0.48ms
+2025-12-13 00:20:55,983 - synthesis_pipeline.profiler - INFO -   Min:        0.02ms
+2025-12-13 00:20:55,983 - synthesis_pipeline.profiler - INFO -   Max:        1.73ms
+2025-12-13 00:20:55,983 - synthesis_pipeline.profiler - INFO - 
+quality_filter_style_academic:
+2025-12-13 00:20:55,983 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,983 - synthesis_pipeline.profiler - INFO -   Total:      0.17s
+2025-12-13 00:20:55,983 - synthesis_pipeline.profiler - INFO -   Avg:        0.28ms
+2025-12-13 00:20:55,984 - synthesis_pipeline.profiler - INFO -   Median:     0.23ms
+2025-12-13 00:20:55,984 - synthesis_pipeline.profiler - INFO -   P95:        0.60ms
+2025-12-13 00:20:55,984 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-13 00:20:55,984 - synthesis_pipeline.profiler - INFO -   Max:        2.08ms
+2025-12-13 00:20:55,984 - synthesis_pipeline.profiler - INFO - 
+quality_filter_related_topics:
+2025-12-13 00:20:55,984 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,984 - synthesis_pipeline.profiler - INFO -   Total:      0.17s
+2025-12-13 00:20:55,984 - synthesis_pipeline.profiler - INFO -   Avg:        0.28ms
+2025-12-13 00:20:55,984 - synthesis_pipeline.profiler - INFO -   Median:     0.22ms
+2025-12-13 00:20:55,984 - synthesis_pipeline.profiler - INFO -   P95:        0.62ms
+2025-12-13 00:20:55,984 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,984 - synthesis_pipeline.profiler - INFO -   Max:        3.36ms
+2025-12-13 00:20:55,984 - synthesis_pipeline.profiler - INFO - 
+quality_filter_explain_beginner:
+2025-12-13 00:20:55,985 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,985 - synthesis_pipeline.profiler - INFO -   Total:      0.16s
+2025-12-13 00:20:55,985 - synthesis_pipeline.profiler - INFO -   Avg:        0.27ms
+2025-12-13 00:20:55,985 - synthesis_pipeline.profiler - INFO -   Median:     0.24ms
+2025-12-13 00:20:55,985 - synthesis_pipeline.profiler - INFO -   P95:        0.46ms
+2025-12-13 00:20:55,985 - synthesis_pipeline.profiler - INFO -   Min:        0.02ms
+2025-12-13 00:20:55,985 - synthesis_pipeline.profiler - INFO -   Max:        1.14ms
+2025-12-13 00:20:55,985 - synthesis_pipeline.profiler - INFO - 
+checkpoint_category:
+2025-12-13 00:20:55,985 - synthesis_pipeline.profiler - INFO -   Count:      6
+2025-12-13 00:20:55,985 - synthesis_pipeline.profiler - INFO -   Total:      0.14s
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Avg:        23.46ms
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Median:     23.06ms
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   P95:        25.16ms
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Min:        22.44ms
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Max:        25.16ms
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO - 
+checkpoint_explain_expert:
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Count:      6
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Total:      0.14s
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Avg:        23.13ms
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Median:     23.10ms
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   P95:        23.54ms
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Min:        22.69ms
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Max:        23.54ms
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO - 
+checkpoint_compare:
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Count:      4
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Total:      0.11s
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Avg:        28.37ms
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   Median:     28.55ms
+2025-12-13 00:20:55,986 - synthesis_pipeline.profiler - INFO -   P95:        30.26ms
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Min:        26.12ms
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Max:        30.26ms
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO - 
+quality_filter_keywords:
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Total:      0.09s
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Avg:        0.15ms
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Median:     0.13ms
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   P95:        0.39ms
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Max:        0.78ms
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO - 
+checkpoint_style_casual:
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Count:      3
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Total:      0.08s
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Avg:        27.16ms
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Median:     25.66ms
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   P95:        31.01ms
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Min:        24.80ms
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Max:        31.01ms
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO - 
+quality_filter_category:
+2025-12-13 00:20:55,987 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Total:      0.08s
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Avg:        0.13ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Median:     0.11ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   P95:        0.25ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Min:        0.05ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Max:        0.55ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO - 
+quality_filter_summary:
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Total:      0.07s
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Avg:        0.12ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Median:     0.10ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   P95:        0.26ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Max:        0.49ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO - 
+checkpoint_keywords:
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Count:      2
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Total:      0.06s
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Avg:        31.80ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Median:     31.80ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   P95:        37.89ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Min:        25.71ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Max:        37.89ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO - 
+checkpoint_counterfactual:
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Count:      2
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Total:      0.06s
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Avg:        28.31ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Median:     28.31ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   P95:        28.36ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Min:        28.25ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO -   Max:        28.36ms
+2025-12-13 00:20:55,988 - synthesis_pipeline.profiler - INFO - 
+checkpoint_questions:
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Count:      2
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Total:      0.05s
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Avg:        25.40ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Median:     25.40ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   P95:        26.97ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Min:        23.84ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Max:        26.97ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO - 
+checkpoint_summary:
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Count:      2
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Total:      0.05s
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Avg:        25.13ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Median:     25.13ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   P95:        25.81ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Min:        24.46ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Max:        25.81ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO - 
+io_write_counterfactual:
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Total:      0.05s
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Avg:        3.73ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Median:     1.44ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   P95:        12.88ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Max:        12.88ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO - 
+quality_filter_questions:
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Total:      0.04s
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Avg:        0.06ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,989 - synthesis_pipeline.profiler - INFO -   P95:        0.21ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Max:        0.46ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO - 
+checkpoint_explain_beginner:
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Total:      0.04s
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Avg:        36.38ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Median:     36.38ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   P95:        36.38ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Min:        36.38ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Max:        36.38ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO - 
+io_write_compare:
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Count:      38
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Total:      0.04s
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Avg:        0.92ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   P95:        2.41ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Max:        2.67ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO - 
+io_write_hypothetical:
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Count:      25
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Total:      0.03s
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Avg:        1.35ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Median:     1.33ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   P95:        2.18ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Max:        2.54ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO - 
+checkpoint_characteristics_neg:
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Total:      0.03s
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Avg:        29.18ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   Median:     29.18ms
+2025-12-13 00:20:55,990 - synthesis_pipeline.profiler - INFO -   P95:        29.18ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Min:        29.18ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Max:        29.18ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO - 
+checkpoint_characteristics_pos:
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Total:      0.03s
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Avg:        28.02ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Median:     28.02ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   P95:        28.02ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Min:        28.02ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Max:        28.02ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO - 
+checkpoint_style_academic:
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Total:      0.03s
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Avg:        25.89ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Median:     25.89ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   P95:        25.89ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Min:        25.89ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Max:        25.89ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO - 
+checkpoint_describe:
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Total:      0.03s
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Avg:        25.65ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Median:     25.65ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   P95:        25.65ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Min:        25.65ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Max:        25.65ms
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO - 
+io_write_style_casual:
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,991 - synthesis_pipeline.profiler - INFO -   Total:      0.02s
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Avg:        1.88ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Median:     1.23ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   P95:        10.86ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Max:        10.86ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO - 
+checkpoint_related_topics:
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Count:      1
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Total:      0.02s
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Avg:        23.95ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Median:     23.95ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   P95:        23.95ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Min:        23.95ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Max:        23.95ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO - 
+io_write_describe:
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Total:      0.02s
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Avg:        1.29ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Median:     1.34ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   P95:        2.73ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Max:        2.73ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO - 
+io_write_characteristics_pos:
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Total:      0.02s
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Avg:        1.27ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Median:     1.29ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   P95:        2.72ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Max:        2.72ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO - 
+io_write_explain_beginner:
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Total:      0.02s
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Avg:        1.19ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Median:     1.20ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   P95:        2.91ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Max:        2.91ms
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO - 
+io_write_style_academic:
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-13 00:20:55,992 - synthesis_pipeline.profiler - INFO -   Avg:        1.14ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Median:     1.12ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   P95:        2.47ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Max:        2.47ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO - 
+io_write_characteristics_neg:
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Avg:        1.11ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   P95:        2.76ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Max:        2.76ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO - 
+io_write_explain_expert:
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Avg:        1.09ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Median:     1.13ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   P95:        1.61ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Max:        1.61ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_compare:
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Count:      1283
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Max:        0.24ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_hypothetical:
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Count:      1202
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Max:        0.47ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO - 
+io_write_related_topics:
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Avg:        0.84ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Median:     1.00ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   P95:        1.97ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Max:        1.97ms
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO - 
+io_write_keywords:
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,993 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Avg:        0.77ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Median:     0.76ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   P95:        1.95ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Max:        1.95ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO - 
+io_write_category:
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Avg:        0.60ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Median:     0.64ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   P95:        0.75ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Max:        0.75ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_counterfactual:
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Count:      598
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   P95:        0.03ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Max:        0.07ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO - 
+io_write_summary:
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Avg:        0.42ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Median:     0.52ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   P95:        0.97ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Max:        0.97ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_explain_beginner:
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Count:      583
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Max:        0.14ms
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_characteristics_pos:
+2025-12-13 00:20:55,994 - synthesis_pipeline.profiler - INFO -   Count:      598
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Max:        0.20ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_explain_expert:
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Total:      0.01s
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Max:        0.08ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_style_academic:
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Count:      598
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Max:        0.05ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_related_topics:
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Count:      587
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Max:        0.22ms
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_describe:
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Count:      593
+2025-12-13 00:20:55,995 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Max:        0.08ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_characteristics_neg:
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Count:      573
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   P95:        0.01ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Min:        0.01ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Max:        0.06ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_style_casual:
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Count:      599
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Max:        0.10ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_keywords:
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Count:      594
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Median:     0.00ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Max:        0.13ms
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO - 
+io_write_questions:
+2025-12-13 00:20:55,996 - synthesis_pipeline.profiler - INFO -   Count:      13
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Avg:        0.25ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Median:     0.01ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   P95:        0.79ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Max:        0.79ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_category:
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Avg:        0.00ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Median:     0.00ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   P95:        0.01ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Max:        0.03ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_summary:
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Count:      589
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Avg:        0.00ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Median:     0.00ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   P95:        0.01ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Max:        0.03ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO - 
+duplicate_check_questions:
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Count:      292
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Total:      0.00s
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Avg:        0.01ms
+2025-12-13 00:20:55,997 - synthesis_pipeline.profiler - INFO -   Median:     0.00ms
+2025-12-13 00:20:55,998 - synthesis_pipeline.profiler - INFO -   P95:        0.02ms
+2025-12-13 00:20:55,998 - synthesis_pipeline.profiler - INFO -   Min:        0.00ms
+2025-12-13 00:20:55,998 - synthesis_pipeline.profiler - INFO -   Max:        0.06ms
+2025-12-13 00:20:55,998 - synthesis_pipeline.profiler - INFO - 
+quality_filter_style_casual:
+2025-12-13 00:20:55,998 - synthesis_pipeline.profiler - INFO -   Count:      601
+2025-12-13 00:20:55,998 - synthesis_pipeline.profiler - INFO -   Total:      -1.56s
+2025-12-13 00:20:55,998 - synthesis_pipeline.profiler - INFO -   Avg:        -2.60ms
+2025-12-13 00:20:55,998 - synthesis_pipeline.profiler - INFO -   Median:     0.21ms
+2025-12-13 00:20:55,998 - synthesis_pipeline.profiler - INFO -   P95:        0.45ms
+2025-12-13 00:20:55,998 - synthesis_pipeline.profiler - INFO -   Min:        -1708.11ms
+2025-12-13 00:20:55,998 - synthesis_pipeline.profiler - INFO -   Max:        2.33ms
+2025-12-13 00:20:55,998 - synthesis_pipeline.profiler - INFO - 
+================================================================================
+2025-12-13 00:20:55,998 - synthesis_pipeline.generator - INFO - 
+val split completed:
+2025-12-13 00:20:55,998 - synthesis_pipeline.generator - INFO -   Total generated: 9891
+2025-12-13 00:20:55,998 - synthesis_pipeline.generator - INFO -   Total rejected: 927
+2025-12-13 00:20:55,998 - synthesis_pipeline.generator - INFO -   Coverage: 14.2 tasks/embedding
+2025-12-13 00:20:56,004 - synthesis_pipeline - INFO - 
+Running post-generation validation...
+2025-12-13 00:20:56,181 - synthesis_pipeline - INFO - 
+================================================================================
+2025-12-13 00:20:56,182 - synthesis_pipeline - INFO - SYNTHESIS COMPLETE
+2025-12-13 00:20:56,182 - synthesis_pipeline - INFO - ================================================================================
+2025-12-13 00:20:56,182 - synthesis_pipeline - INFO - 
+val:
+2025-12-13 00:20:56,182 - synthesis_pipeline - INFO -   Generated: 9891
+2025-12-13 00:20:56,182 - synthesis_pipeline - INFO -   Rejected: 927
+2025-12-13 00:20:56,182 - synthesis_pipeline - INFO - 
+Total time: 3h 26m 52s
