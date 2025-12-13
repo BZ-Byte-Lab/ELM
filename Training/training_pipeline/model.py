@@ -86,7 +86,7 @@ class ELMModel(nn.Module):
         dtype = torch.bfloat16 if self.config.use_bf16 else torch.float32
 
         # Determine attention implementation
-        attn_impl = "flash_attention_2" if torch.cuda.is_available() else None
+        attn_impl = None
 
         # Load model
         model = AutoModelForCausalLM.from_pretrained(
