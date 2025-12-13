@@ -10,6 +10,8 @@
 4. [数据流向图](#4-数据流向图)
 5. [输出格式说明](#5-输出格式说明)
 6. [运行指南](#6-运行指南)
+7. [项目级工具脚本](#7-项目级工具脚本)
+8. [总结](#8-总结)
 
 ---
 
@@ -47,9 +49,16 @@ elm/
 │   │   ├── quality_filter.py   # 质量过滤
 │   │   ├── checkpoint.py       # 检查点系统
 │   │   ├── generator.py        # 主生成器
+│   │   ├── output_writer.py    # JSONL 输出写入
+│   │   ├── validator.py        # 验证检查清单
+│   │   ├── profiler.py         # 性能分析器
 │   │   └── utils.py            # 工具函数
 │   └── scripts/
 │       └── run_synthesis.py    # 合成入口
+│
+├── scripts/                    # 项目级脚本
+│   ├── sort_by_task_type.py    # 按任务类型排序 JSONL
+│   └── update_checkpoint.py    # 更新检查点文件
 │
 ├── data/                       # 输出数据目录
 │   ├── wikitext2_processed/    # 预处理文本 (Parquet)
@@ -563,12 +572,14 @@ class TaskCategory(Enum):
 class SynthesisConfig:
     # API 设置
     api_base_url: str = "https://openrouter.ai/api/v1"
-    model_name: str = "qwen/qwen3-30b-a3b-instruct"
+    model_name: str = "qwen/qwen3-30b-a3b-instruct-2507"
 
     # 速率限制
-    requests_per_second: float = 1.0        # 每秒请求数
-    max_concurrent_requests: int = 10       # 最大并发数
+    requests_per_minute: int = 60           # 每分钟请求数
+    requests_per_second: float = 10         # 每秒请求数
+    max_concurrent_requests: int = 10       # 最大并发请求数（异步模式）
     max_retries: int = 3                    # 最大重试次数
+    retry_delay: float = 1.0                # 重试延迟（秒）
 
     # k-NN 设置
     knn_k: int = 10                         # k-NN 邻居数
@@ -577,12 +588,16 @@ class SynthesisConfig:
 
     # 生成设置
     checkpoint_interval: int = 20           # 检查点间隔
-    variations_per_task: int = 1            # 每任务变体数
-    batch_size: int = 50                    # 批处理大小
+    variations_per_task: int = 2            # 每任务变体数
+    min_samples_per_embedding: int = 15     # 每个嵌入最小样本数
+    batch_size: int = 50                    # 批处理大小（异步操作）
 
-    # 异步模式
+    # 异步处理模式
     use_async: bool = True                  # 启用异步处理
-    max_concurrent_batches: int = 3         # 最大并发批次
+    max_concurrent_batches: int = 3         # 最大并发批次数
+
+    # 性能分析
+    enable_profiling: bool = True           # 启用性能分析追踪
 
     # 质量控制
     max_rejection_rate: float = 0.20        # 最大拒绝率
@@ -590,6 +605,9 @@ class SynthesisConfig:
 
     # 嵌入维度（与 Data_Preparation 一致）
     embedding_dim: int = 2560
+
+    # 随机种子（可复现性）
+    random_seed: int = 42
 ```
 
 ### 3.2 任务注册表 (task_registry.py)
@@ -1185,7 +1203,226 @@ class CheckpointManager:
         return count > 0 and count % self.interval == 0
 ```
 
-### 3.7 合成生成器 (generator.py)
+### 3.7 输出写入器 (output_writer.py)
+
+输出写入器负责将生成的合成数据写入 JSONL 文件。
+
+#### OutputWriter 类
+
+```python
+class OutputWriter:
+    """
+    JSONL 输出写入器
+
+    功能：
+    - 原子性写入操作
+    - 自动创建输出目录
+    - 支持结构化输出格式
+    """
+
+    def __init__(self, output_path: Path):
+        self.output_path = output_path
+        self.output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    def write(self, output: SynthesisOutput):
+        """
+        写入单个合成输出
+
+        参数：
+            output: SynthesisOutput 数据类实例
+        """
+        with open(self.output_path, 'a', encoding='utf-8') as f:
+            json.dump(output.to_dict(), f, ensure_ascii=False)
+            f.write('\n')
+
+    def close(self):
+        """关闭写入器（可选，用于资源清理）"""
+        pass
+```
+
+#### SynthesisOutput 数据类
+
+```python
+@dataclass
+class SynthesisOutput:
+    """合成输出数据结构"""
+    task_type: str                   # 任务类型名称
+    input_prompt_template: str       # Prompt 模板
+    embedding_index: int             # 嵌入索引
+    target_text: str                 # 生成的目标文本
+    metadata: Dict[str, Any]         # 元数据（温度、top_p、token数等）
+
+    def to_dict(self) -> dict:
+        """转换为字典用于 JSON 序列化"""
+        return {
+            'task_type': self.task_type,
+            'input_prompt_template': self.input_prompt_template,
+            'embedding_index': self.embedding_index,
+            'target_text': self.target_text,
+            **self.metadata
+        }
+```
+
+### 3.8 验证器 (validator.py)
+
+验证器提供全面的输出质量检查清单。
+
+#### Validator 类
+
+```python
+class Validator:
+    """
+    合成数据验证器
+
+    检查项：
+    1. 覆盖率：每个嵌入至少有 min_samples 个样本
+    2. 配对任务：验证 k-NN 关系
+    3. Hypothetical 任务：检查 alpha 范围
+    4. 去重：检测重复内容
+    5. 拒绝率：确保质量控制在阈值内
+    """
+
+    def __init__(self, config: SynthesisConfig):
+        self.config = config
+
+    def validate_output(self, split: str) -> ValidationReport:
+        """
+        验证指定切分的输出
+
+        参数：
+            split: 数据切分名称（train/val/test）
+
+        返回：
+            ValidationReport: 验证报告
+        """
+        output_path = self.config.get_synthesis_path(split)
+
+        # 加载所有记录
+        records = []
+        with open(output_path, 'r') as f:
+            for line in f:
+                records.append(json.loads(line.strip()))
+
+        report = ValidationReport()
+
+        # 检查 1：覆盖率
+        embedding_coverage = defaultdict(set)
+        for record in records:
+            idx = record['embedding_index']
+            task = record['task_type']
+            embedding_coverage[idx].add(task)
+
+        min_coverage = min(len(tasks) for tasks in embedding_coverage.values())
+        report.min_samples = min_coverage
+        report.coverage_ok = min_coverage >= self.config.min_samples_per_embedding
+
+        # 检查 2：配对任务验证
+        compare_records = [r for r in records if r['task_type'] == 'compare']
+        report.compare_has_neighbors = all('neighbor_idx' in r for r in compare_records)
+
+        # 检查 3：Alpha 范围验证
+        hypo_records = [r for r in records if r['task_type'] == 'hypothetical']
+        alphas = [r.get('alpha', 0) for r in hypo_records]
+        report.alpha_in_range = all(0.3 <= a <= 0.7 for a in alphas)
+
+        # 检查 4：去重
+        hashes = set()
+        duplicates = 0
+        for record in records:
+            text_hash = hashlib.md5(record['target_text'].encode()).hexdigest()
+            if text_hash in hashes:
+                duplicates += 1
+            hashes.add(text_hash)
+
+        report.duplicates_found = duplicates
+        report.dedup_ok = duplicates == 0
+
+        return report
+```
+
+### 3.9 性能分析器 (profiler.py)
+
+性能分析器追踪和记录流水线性能指标。
+
+#### Profiler 类
+
+```python
+class Profiler:
+    """
+    性能分析器
+
+    追踪指标：
+    - API 延迟统计
+    - 吞吐量（样本/秒）
+    - 拒绝率趋势
+    - 检查点开销
+    """
+
+    def __init__(self, enabled: bool = True):
+        self.enabled = enabled
+        self.metrics = defaultdict(list)
+        self.start_time = time.time()
+
+    def record(self, metric_name: str, value: float):
+        """记录单个指标"""
+        if not self.enabled:
+            return
+
+        self.metrics[metric_name].append({
+            'timestamp': time.time(),
+            'value': value
+        })
+
+    def get_stats(self, metric_name: str) -> dict:
+        """
+        获取指标统计
+
+        返回：
+            {
+                'mean': float,
+                'median': float,
+                'p95': float,
+                'p99': float,
+                'min': float,
+                'max': float,
+                'count': int
+            }
+        """
+        if metric_name not in self.metrics:
+            return {}
+
+        values = [m['value'] for m in self.metrics[metric_name]]
+        values_sorted = sorted(values)
+
+        return {
+            'mean': np.mean(values),
+            'median': np.median(values),
+            'p95': np.percentile(values, 95),
+            'p99': np.percentile(values, 99),
+            'min': min(values),
+            'max': max(values),
+            'count': len(values)
+        }
+
+    def log_summary(self):
+        """输出性能摘要到日志"""
+        if not self.enabled:
+            return
+
+        elapsed = time.time() - self.start_time
+        logger.info(f"\n性能分析摘要 (运行时间: {elapsed:.1f}s)")
+
+        for metric_name in self.metrics:
+            stats = self.get_stats(metric_name)
+            logger.info(f"\n{metric_name}:")
+            logger.info(f"  平均: {stats['mean']:.3f}")
+            logger.info(f"  中位数: {stats['median']:.3f}")
+            logger.info(f"  P95: {stats['p95']:.3f}")
+            logger.info(f"  P99: {stats['p99']:.3f}")
+            logger.info(f"  样本数: {stats['count']}")
+```
+
+### 3.10 合成生成器 (generator.py)
 
 主生成器协调整个合成流程。
 
@@ -1582,16 +1819,29 @@ async def _process_pair_task_async(
 │  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐                  │
 │  │  API Client  │───▶│Quality Filter│───▶│ Checkpoint   │                  │
 │  │  (OpenRouter)│    │  (5层检查)   │    │   Manager    │                  │
-│  │  Qwen3-30B   │    │              │    │ (断点续传)    │                  │
-│  └──────────────┘    └──────────────┘    └──────────────┘                  │
-│                                                   │                         │
-│                                                   ▼                         │
-│                                          ┌──────────────┐                  │
-│                                          │    JSONL     │                  │
-│                                          │ train_syn.jl │                  │
-│                                          │  val_syn.jl  │                  │
-│                                          │ test_syn.jl  │                  │
-│                                          └──────────────┘                  │
+│  │Qwen3-30B-2507│    │              │    │ (断点续传)    │                  │
+│  └──────────────┘    └──────────────┘    └──────┬───────┘                  │
+│         │                                        │                         │
+│         ├────────────────────────────────────────┤                         │
+│         ▼                                        ▼                         │
+│  ┌──────────────┐                       ┌──────────────┐                  │
+│  │  Profiler    │                       │OutputWriter  │                  │
+│  │ (性能追踪)    │                       │ (JSONL 写入) │                  │
+│  └──────────────┘                       └──────┬───────┘                  │
+│                                                 │                         │
+│                                                 ▼                         │
+│                                        ┌──────────────┐                  │
+│                                        │    JSONL     │                  │
+│                                        │ train_syn.jl │                  │
+│                                        │  val_syn.jl  │                  │
+│                                        │ test_syn.jl  │                  │
+│                                        └──────┬───────┘                  │
+│                                               │                           │
+│                                               ▼                           │
+│                                        ┌──────────────┐                  │
+│                                        │  Validator   │                  │
+│                                        │  (验证清单)   │                  │
+│                                        └──────────────┘                  │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -1759,18 +2009,57 @@ python Data_Preparation/scripts/run_embedding_only.py \
 
 ### 6.3 运行数据合成阶段
 
+#### 基本用法
+
 ```bash
-# 完整合成
+# 完整合成（所有切分：train, val, test）
 python Data_Synthesis/scripts/run_synthesis.py
 
-# 常用参数
-python Data_Synthesis/scripts/run_synthesis.py \
-    --splits train \                  # 仅处理训练集
-    --requests-per-second 0.5 \       # 降低请求速率
-    --checkpoint-interval 50 \        # 检查点间隔
-    --validate-only                   # 仅验证现有输出
+# 仅处理特定切分
+python Data_Synthesis/scripts/run_synthesis.py --splits train
+python Data_Synthesis/scripts/run_synthesis.py --splits train val
+```
 
-# 断点续传（自动从检查点恢复）
+#### 参数调优
+
+```bash
+# 降低请求速率（避免 API 限制）
+python Data_Synthesis/scripts/run_synthesis.py \
+    --requests-per-second 5 \         # 默认 10 req/s
+    --max-concurrent-requests 5       # 默认 10
+
+# 调整批处理和并发
+python Data_Synthesis/scripts/run_synthesis.py \
+    --batch-size 30 \                 # 默认 50
+    --max-concurrent-batches 2        # 默认 3
+
+# 调整检查点间隔
+python Data_Synthesis/scripts/run_synthesis.py \
+    --checkpoint-interval 50          # 默认 20
+```
+
+#### 验证和工具
+
+```bash
+# 仅验证现有输出（不生成新数据）
+python Data_Synthesis/scripts/run_synthesis.py --validate-only
+
+# 排序 JSONL 文件
+python scripts/sort_by_task_type.py
+
+# 更新检查点（同步实际数据）
+python scripts/update_checkpoint.py
+```
+
+#### 断点续传
+
+检查点系统会自动保存进度，中断后重新运行相同命令即可恢复：
+
+```bash
+# 任务中断...
+# Ctrl+C 或系统中断
+
+# 重新运行，自动从检查点恢复
 python Data_Synthesis/scripts/run_synthesis.py --splits train
 ```
 
@@ -1830,17 +2119,186 @@ python Data_Synthesis/scripts/run_synthesis.py --requests-per-second 0.3
 
 ---
 
-## 总结
+## 7. 项目级工具脚本
+
+### 7.1 按任务类型排序 (scripts/sort_by_task_type.py)
+
+此脚本用于按任务类型对生成的 JSONL 文件进行排序，便于分析和组织数据。
+
+#### 功能
+
+```python
+def sort_by_task_type(input_path: str, output_path: str | None = None):
+    """
+    按 task_type 字段排序 JSONL 文件
+
+    参数：
+        input_path: 输入 JSONL 文件路径
+        output_path: 输出文件路径。如果为 None，则覆盖原文件
+
+    功能：
+    1. 读取所有记录
+    2. 统计各任务类型数量
+    3. 按 task_type 排序
+    4. 写入排序后的记录
+    """
+```
+
+#### 使用方法
+
+```bash
+# 默认排序 train_synthesis.jsonl（原地覆盖）
+python scripts/sort_by_task_type.py
+
+# 指定输入文件
+python scripts/sort_by_task_type.py --input data/synthesis/train_synthesis.jsonl
+
+# 指定输出文件（不覆盖原文件）
+python scripts/sort_by_task_type.py \
+    --input data/synthesis/train_synthesis.jsonl \
+    --output data/synthesis/train_synthesis_sorted.jsonl
+```
+
+#### 输出示例
+
+```
+Loaded 77008 records
+
+Task type counts:
+  category: 4813
+  characteristics_neg: 4813
+  characteristics_pos: 4813
+  compare: 14439
+  counterfactual: 4813
+  describe: 4813
+  explain_beginner: 4813
+  explain_expert: 4813
+  hypothetical: 9626
+  keywords: 4813
+  questions: 4813
+  related_topics: 4813
+  style_academic: 4813
+  style_casual: 4813
+  summary: 4813
+
+Sorted records written to: data/synthesis/train_synthesis.jsonl
+```
+
+### 7.2 更新检查点 (scripts/update_checkpoint.py)
+
+此脚本用于根据实际生成的 JSONL 数据更新检查点文件，确保检查点状态与实际数据一致。
+
+#### 功能
+
+```python
+def update_checkpoint(jsonl_path: Path, checkpoint_path: Path, task_name: str):
+    """
+    基于实际 JSONL 数据更新检查点文件
+
+    参数：
+        jsonl_path: train_synthesis.jsonl 路径
+        checkpoint_path: 检查点文件路径
+        task_name: 任务名称（如 "summary"）
+
+    处理流程：
+    1. 从 JSONL 读取指定任务的实际数据
+    2. 提取已完成的嵌入索引
+    3. 统计总生成数
+    4. 更新检查点文件
+    """
+```
+
+#### 使用方法
+
+```bash
+# 自动更新所有任务的检查点
+python scripts/update_checkpoint.py
+```
+
+#### 工作原理
+
+1. **自动发现任务类型**：扫描 `train_synthesis.jsonl` 发现所有唯一的 `task_type`
+2. **逐任务更新**：为每个任务类型创建/更新对应的检查点文件
+3. **准确性保证**：基于实际生成数据，而非推测值
+
+#### 输出示例
+
+```
+============================================================
+Discovering task types...
+============================================================
+
+Found 16 task types: category, characteristics_neg, characteristics_pos, compare, counterfactual, describe, explain_beginner, explain_expert, hypothetical, keywords, questions, related_topics, style_academic, style_casual, summary
+
+============================================================
+Processing task 1/16: category
+============================================================
+Reading data/synthesis/train_synthesis.jsonl...
+
+Task: category
+  Total records found: 4813
+  Unique embedding indices: 4813
+  Index range: 0 - 4812
+
+Old checkpoint:
+  Completed indices: 4500
+  Total generations: 4500
+
+Writing updated checkpoint to data/synthesis/checkpoints/train_category_checkpoint.json...
+✅ Checkpoint updated successfully!
+
+New checkpoint:
+  Completed indices: 4813
+  Total generations: 4813
+
+[... 其他任务类似 ...]
+
+============================================================
+✅ All 16 checkpoints updated successfully!
+============================================================
+```
+
+#### 使用场景
+
+- **数据恢复**：手动修复或合并 JSONL 文件后，重新同步检查点
+- **验证一致性**：确保检查点准确反映实际生成进度
+- **调试**：当检查点与实际数据不匹配时，重建准确状态
+
+---
+
+## 8. 总结
 
 ELM 项目是一个完整的数据处理流水线，包含两个主要阶段：
 
 1. **数据准备阶段**：从 WikiText-2 提取高质量文本，生成 Qwen3-Embedding-4B 嵌入向量
-2. **数据合成阶段**：使用 LLM 生成 16 种任务类型的多样化训练数据
+2. **数据合成阶段**：使用 Qwen3-30B-A3B-Instruct-2507 生成 16 种任务类型的多样化训练数据
 
-关键技术特点：
+### 关键技术特点
+
+#### 数据准备阶段
 - **高质量嵌入**：Last-token pooling + L2 归一化
+- **高效存储**：Parquet（文本）+ SafeTensors（嵌入向量）
+- **性能优化**：Flash Attention 2 + FP16 半精度
+- **可配置过滤**：Token 数量、质量检查
+
+#### 数据合成阶段
 - **多样化任务**：事实/描述/创意/配对 四大类 16 种任务
 - **k-NN 支持**：FAISS 索引实现高效相似度搜索
-- **断点续传**：检查点系统支持长时间任务
-- **质量控制**：5 层过滤 + 去重机制
-- **异步处理**：高效的 API 调用和速率限制
+- **断点续传**：检查点系统支持长时间任务中断恢复
+- **质量控制**：5 层过滤（最小 token、指令泄露、重复检测、无意义内容、相似度）+ MD5 去重
+- **异步处理**：批量并发 API 调用，速率限制保护
+- **性能分析**：实时追踪 API 延迟、吞吐量、拒绝率等指标
+- **验证机制**：全面的输出质量检查清单
+
+#### 工具脚本
+- **数据整理**：按任务类型排序 JSONL 文件
+- **状态同步**：根据实际数据自动更新检查点
+
+### 项目规模
+
+| 组件 | 输出 | 说明 |
+|------|------|------|
+| Data_Preparation | 6,017 文本 + 嵌入 | ~59 MB（SafeTensors）|
+| Data_Synthesis | ~289,000 合成样本 | ~138 MB（JSONL）|
+| 任务类型 | 16 种 | 单文本 14 种 + 配对 2 种 |
+| 质量保障 | 5 层过滤 + 去重 | 拒绝率 < 20% |
