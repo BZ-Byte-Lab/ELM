@@ -24,7 +24,7 @@ def parse_args():
     parser.add_argument(
         "--llm-model",
         type=str,
-        default="Qwen/Qwen3-4B-Instruct",
+        default="Qwen/Qwen3-4B-Instruct-2507",
         help="Base LLM model name",
     )
     parser.add_argument(
