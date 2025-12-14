@@ -161,8 +161,8 @@ class ELMTrainer:
                 config=vars(self.config),
             )
 
-        # Mixed precision scaler
-        scaler = torch.amp.GradScaler('cuda') if self.config.use_bf16 else None
+        # Mixed precision scaler (only needed for FP16, not BF16)
+        scaler = None  # BFloat16 doesn't need gradient scaling
 
         logger.info(f"Starting training for {self.config.num_epochs} epochs")
         logger.info(f"Total steps: {total_steps}, Steps per epoch: {steps_per_epoch}")
