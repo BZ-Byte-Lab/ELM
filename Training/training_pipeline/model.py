@@ -91,7 +91,7 @@ class ELMModel(nn.Module):
         # Load model
         model = AutoModelForCausalLM.from_pretrained(
             self.config.llm_model_name,
-            torch_dtype=dtype,
+            dtype=dtype,
             attn_implementation=attn_impl,
             trust_remote_code=True,
         )
@@ -102,6 +102,9 @@ class ELMModel(nn.Module):
         new_vocab_size = model.config.vocab_size
         if new_vocab_size != original_vocab_size:
             logger.info(f"Resized embeddings: {original_vocab_size} -> {new_vocab_size}")
+            # Ensure new embeddings have correct dtype
+            if model.get_input_embeddings().weight.dtype != dtype:
+                model.get_input_embeddings().weight.data = model.get_input_embeddings().weight.data.to(dtype)
 
         # Freeze ALL LLM parameters
         for name, param in model.named_parameters():

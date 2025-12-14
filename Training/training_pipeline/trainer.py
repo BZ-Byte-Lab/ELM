@@ -162,7 +162,7 @@ class ELMTrainer:
             )
 
         # Mixed precision scaler
-        scaler = torch.cuda.amp.GradScaler() if self.config.use_bf16 else None
+        scaler = torch.amp.GradScaler('cuda') if self.config.use_bf16 else None
 
         logger.info(f"Starting training for {self.config.num_epochs} epochs")
         logger.info(f"Total steps: {total_steps}, Steps per epoch: {steps_per_epoch}")
