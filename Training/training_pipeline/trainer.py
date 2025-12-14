@@ -225,7 +225,8 @@ class ELMTrainer:
             }
 
             # Forward pass with mixed precision
-            with torch.cuda.amp.autocast(
+            with torch.amp.autocast(
+                device_type='cuda',
                 dtype=torch.bfloat16,
                 enabled=self.config.use_bf16,
             ):
@@ -349,7 +350,8 @@ class ELMTrainer:
                 for k, v in batch.items()
             }
 
-            with torch.cuda.amp.autocast(
+            with torch.amp.autocast(
+                device_type='cuda',
                 dtype=torch.bfloat16,
                 enabled=self.config.use_bf16,
             ):

@@ -111,7 +111,9 @@ class ELMModel(nn.Module):
         # Enable gradient checkpointing for memory efficiency
         if self.config.use_gradient_checkpointing:
             model.gradient_checkpointing_enable()
-            logger.info("Enabled gradient checkpointing")
+            # Disable use_cache (incompatible with gradient checkpointing)
+            model.config.use_cache = False
+            logger.info("Enabled gradient checkpointing and disabled use_cache")
 
         return model
 
