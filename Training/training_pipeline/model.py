@@ -49,6 +49,10 @@ class ELMModel(nn.Module):
             use_residual=config.use_residual,
         )
 
+        # Ensure adapter has same dtype as LLM
+        adapter_dtype = torch.bfloat16 if config.use_bf16 else torch.float32
+        self.adapter = self.adapter.to(adapter_dtype)
+
         # Store embedding layer reference
         self.token_embedding = self.llm.model.embed_tokens
 
@@ -86,7 +90,8 @@ class ELMModel(nn.Module):
         dtype = torch.bfloat16 if self.config.use_bf16 else torch.float32
 
         # Determine attention implementation
-        attn_impl = None
+        # Use "eager" for better compatibility with gradient checkpointing
+        attn_impl = "eager"
 
         # Load model
         model = AutoModelForCausalLM.from_pretrained(
@@ -147,6 +152,10 @@ class ELMModel(nn.Module):
 
         # Step 2: Transform external embeddings through trainable E_A
         adapted_embeds = self.adapter(embeddings)  # (batch, embedding_dim)
+
+        # Ensure adapted embeddings match token embeddings dtype
+        if adapted_embeds.dtype != token_embeds.dtype:
+            adapted_embeds = adapted_embeds.to(token_embeds.dtype)
 
         # Step 3: Inject adapted embeddings at <EMB> positions
         # Note: Qwen3-4B-Instruct hidden_size=2560, same as embedding_dim
