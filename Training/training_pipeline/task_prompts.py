@@ -3,8 +3,7 @@
 These prompts MUST match exactly with Data_Synthesis/synthesis_pipeline/task_registry.py
 to ensure consistency between data generation and training.
 
-Phase I: Single-text tasks only (13 tasks)
-Phase II: Pair-based tasks (compare, hypothetical) will be added
+Single-text tasks only (13 tasks)
 """
 
 # Single-text task prompts (13 tasks) - extracted from task_registry.py
@@ -127,27 +126,21 @@ def get_single_text_prompt(task_type: str) -> str:
         Prompt template string
 
     Raises:
-        ValueError: If task_type is unknown or is a pair-based task
+        ValueError: If task_type is unknown
     """
     if task_type not in SINGLE_TEXT_PROMPTS:
-        if task_type in ["compare", "hypothetical"]:
-            raise ValueError(
-                f"Task '{task_type}' is pair-based and will be handled in Phase II. "
-                "Use the hardcoded prompt from dataset.py for now."
-            )
-        else:
-            raise ValueError(f"Unknown task type: {task_type}")
+        raise ValueError(f"Unknown task type: {task_type}")
 
     return SINGLE_TEXT_PROMPTS[task_type]
 
 
 def is_single_text_task(task_type: str) -> bool:
-    """Check if task is a single-text task (Phase I).
+    """Check if task is a single-text task.
 
     Args:
         task_type: Task type name
 
     Returns:
-        True if task is single-text, False if pair-based
+        True if task is single-text, False otherwise
     """
     return task_type in SINGLE_TEXT_PROMPTS

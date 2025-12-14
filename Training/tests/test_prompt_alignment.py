@@ -2,8 +2,6 @@
 
 This test ensures that the 13 single-text task prompts in the Training module
 match exactly with the prompts used during data synthesis.
-
-Phase I: Tests only single-text tasks (compare/hypothetical deferred to Phase II)
 """
 
 import sys
@@ -25,7 +23,7 @@ def test_prompt_alignment():
     errors = []
     matched = []
 
-    # Get all single-text tasks (exclude compare/hypothetical)
+    # Get all single-text tasks
     single_text_tasks = [
         task_name for task_name, task_config in registry.tasks.items()
         if not task_config.requires_pair
@@ -61,9 +59,9 @@ def test_prompt_alignment():
 
     # Verify compare/hypothetical are NOT in training prompts
     if "compare" in SINGLE_TEXT_PROMPTS:
-        errors.append("'compare' should NOT be in SINGLE_TEXT_PROMPTS (Phase II task)")
+        errors.append("'compare' should NOT be in SINGLE_TEXT_PROMPTS")
     if "hypothetical" in SINGLE_TEXT_PROMPTS:
-        errors.append("'hypothetical' should NOT be in SINGLE_TEXT_PROMPTS (Phase II task)")
+        errors.append("'hypothetical' should NOT be in SINGLE_TEXT_PROMPTS")
 
     # Report results
     print(f"\nResults:")

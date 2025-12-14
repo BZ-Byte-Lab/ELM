@@ -132,8 +132,6 @@ class TrainingCollator:
         "style_academic": "Write academically:",
         "style_casual": "Write casually:",
         "counterfactual": "Imagine differently:",
-        "compare": "Compare these:",
-        "hypothetical": "Describe the midpoint:",
     }
 
     def __init__(
@@ -173,24 +171,18 @@ class TrainingCollator:
             task_type = sample["task_type"]
             target_text = sample["target_text"]
 
-            # Phase I: Use full synthesis prompts for single-text tasks
-            # Phase II will handle compare/hypothetical
-            if task_type in ["compare", "hypothetical"]:
-                # Keep short prompts for pair-based tasks (Phase II will handle)
+            # Use full synthesis prompts for single-text tasks
+            try:
+                prompt = get_single_text_prompt(task_type)
+                # Remove {text} placeholder (embedding carries content)
+                prompt = prompt.replace("{text}", "")
+                # Remove {random_domain} placeholder for counterfactual
+                # (it was filled during synthesis, now just part of the text)
+                prompt = prompt.replace("{random_domain}", "")
+            except ValueError as e:
+                # Fallback to short prompt if task not found
+                logger.warning(f"Could not get full prompt for task '{task_type}': {e}")
                 prompt = self.TASK_PROMPTS.get(task_type, "Process:")
-            else:
-                # Use full synthesis prompts for single-text tasks
-                try:
-                    prompt = get_single_text_prompt(task_type)
-                    # Remove {text} placeholder (embedding carries content)
-                    prompt = prompt.replace("{text}", "")
-                    # Remove {random_domain} placeholder for counterfactual
-                    # (it was filled during synthesis, now just part of the text)
-                    prompt = prompt.replace("{random_domain}", "")
-                except ValueError as e:
-                    # Fallback to short prompt if task not found
-                    logger.warning(f"Could not get full prompt for task '{task_type}': {e}")
-                    prompt = self.TASK_PROMPTS.get(task_type, "Process:")
 
             # Format: <EMB> [prompt]\n[target]
             # The <EMB> will be replaced by adapted embedding during forward pass

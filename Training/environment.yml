@@ -17,4 +17,3 @@ dependencies:
     - tqdm>=4.65.0
     - numpy>=1.24.0
     - pyyaml
-    - flash-attn>=2.0.0
