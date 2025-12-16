@@ -47,6 +47,8 @@ class ELMModel(nn.Module):
             embedding_dim=config.embedding_dim,
             hidden_dim=config.hidden_dim,
             use_residual=config.use_residual,
+            residual_scale=config.residual_scale,
+            dropout_rate=config.dropout_rate,
         )
 
         # Ensure adapter has same dtype as LLM
@@ -176,6 +178,17 @@ class ELMModel(nn.Module):
             'loss': outputs.loss if labels is not None else None,
             'logits': outputs.logits,
         }
+
+    def get_adapter_outputs(self, embeddings: torch.Tensor) -> torch.Tensor:
+        """Get adapter outputs for contrastive loss calculation.
+
+        Args:
+            embeddings: Input embeddings (batch_size, embedding_dim)
+
+        Returns:
+            Adapter outputs (batch_size, embedding_dim)
+        """
+        return self.adapter(embeddings)
 
     @torch.no_grad()
     def generate(

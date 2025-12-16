@@ -23,21 +23,28 @@ class TrainingConfig:
 
     # Adapter Configuration (EnhancedAdapter only)
     use_residual: bool = True
+    residual_scale: float = 0.1   # Scale residual to prevent dominance
+    dropout_rate: float = 0.1     # Dropout for regularization
+
+    # Contrastive Loss Configuration
+    use_contrastive_loss: bool = True
+    contrastive_weight: float = 0.1       # Weight for contrastive loss
+    contrastive_temperature: float = 0.07  # InfoNCE temperature
 
     # Training Hyperparameters
-    learning_rate: float = 1e-4
-    warmup_steps: int = 1000
-    weight_decay: float = 0.01
+    learning_rate: float = 2e-4   # INCREASED from 1e-4 for faster learning
+    warmup_steps: int = 500       # DECREASED from 1000 (better init needs less warmup)
+    weight_decay: float = 0.02    # INCREASED from 0.01 for stronger regularization
     max_grad_norm: float = 1.0
 
     # Batch Configuration (optimized for 40GB VRAM)
-    batch_size: int = 16
-    gradient_accumulation_steps: int = 2  # effective batch = 32
+    batch_size: int = 8                          # DECREASED from 16
+    gradient_accumulation_steps: int = 4         # INCREASED from 2 (effective batch = 32)
 
     # Training Schedule
     num_epochs: int = 3
     max_steps: Optional[int] = None
-    eval_steps: int = 500
+    eval_steps: int = 250         # DECREASED from 500 for earlier collapse detection
     save_steps: int = 1000
     logging_steps: int = 50
 

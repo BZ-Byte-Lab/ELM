@@ -2,6 +2,7 @@
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.optim import AdamW
 from torch.utils.data import DataLoader
 from transformers import get_linear_schedule_with_warmup
@@ -115,6 +116,40 @@ class ELMTrainer:
             f"{num_training_steps} total steps"
         )
 
+    def _contrastive_loss(
+        self,
+        embeddings: torch.Tensor,
+        temperature: float = 0.07
+    ) -> torch.Tensor:
+        """InfoNCE contrastive loss to prevent adapter collapse.
+
+        Encourages different input embeddings to produce different outputs.
+
+        Args:
+            embeddings: Adapter outputs (batch_size, embedding_dim)
+            temperature: Temperature parameter for scaling similarities
+
+        Returns:
+            Contrastive loss value
+        """
+        # Normalize embeddings
+        embeddings = F.normalize(embeddings, dim=1)
+
+        # Compute similarity matrix
+        sim_matrix = torch.matmul(embeddings, embeddings.T) / temperature
+
+        # Mask out diagonal (self-similarity)
+        mask = torch.eye(len(embeddings), device=embeddings.device).bool()
+        sim_matrix.masked_fill_(mask, -1e9)
+
+        # Create labels (each sample should be dissimilar to others)
+        labels = torch.arange(len(embeddings), device=embeddings.device)
+
+        # Cross-entropy loss
+        loss = F.cross_entropy(sim_matrix, labels)
+
+        return loss
+
     def train(self, resume_from: Optional[Path] = None):
         """Main training loop.
 
@@ -215,6 +250,7 @@ class ELMTrainer:
         self.optimizer.zero_grad()
 
         accumulation_loss = 0.0
+        original_losses = []  # Track original losses for logging
         pbar = tqdm(train_loader, desc=f"Epoch {self.epoch + 1}")
 
         for step, batch in enumerate(pbar):
@@ -237,7 +273,26 @@ class ELMTrainer:
                     embedding_positions=batch["embedding_positions"],
                     labels=batch["labels"],
                 )
-                loss = outputs["loss"] / self.config.gradient_accumulation_steps
+
+                # Get adapter outputs for contrastive loss
+                adapter_outputs = self.model.get_adapter_outputs(batch["embeddings"])
+
+                # Store original LM loss for logging
+                lm_loss = outputs["loss"].item()
+                original_losses.append(lm_loss)
+
+                # Add contrastive loss if enabled
+                if self.config.use_contrastive_loss:
+                    contra_loss = self._contrastive_loss(
+                        adapter_outputs,
+                        temperature=self.config.contrastive_temperature
+                    )
+                    total_loss = outputs["loss"] + self.config.contrastive_weight * contra_loss
+                else:
+                    total_loss = outputs["loss"]
+
+                # Scale loss for gradient accumulation (backward pass only)
+                loss = total_loss / self.config.gradient_accumulation_steps
 
             # Backward pass
             if scaler:
@@ -272,20 +327,51 @@ class ELMTrainer:
                 # Logging
                 if self.global_step % self.config.logging_steps == 0:
                     lr = self.scheduler.get_last_lr()[0]
+
+                    # Calculate average loss from original losses
+                    if original_losses:
+                        avg_loss = sum(original_losses) / len(original_losses)
+                    else:
+                        avg_loss = 0.0
+
+                    # Compute adapter variance metrics
+                    with torch.no_grad():
+                        sample_embeds = batch["embeddings"][:min(8, len(batch["embeddings"]))]
+                        adapter_out = self.model.adapter(sample_embeds)
+
+                        # Normalize and compute similarity
+                        adapter_out_norm = F.normalize(adapter_out, dim=1)
+                        similarity_matrix = torch.matmul(adapter_out_norm, adapter_out_norm.T)
+
+                        # Average similarity (excluding diagonal)
+                        mask = ~torch.eye(len(adapter_out), device=adapter_out.device).bool()
+                        avg_similarity = similarity_matrix[mask].mean().item() if len(adapter_out) > 1 else 0.0
+
+                        # Output statistics
+                        output_std = adapter_out.std().item()
+                        output_norm = adapter_out.norm(dim=1).mean().item()
+
                     pbar.set_postfix({
-                        'loss': f'{accumulation_loss:.4f}',
+                        'loss': f'{avg_loss:.4f}',
+                        'sim': f'{avg_similarity:.3f}',   # Watch for collapse
+                        'std': f'{output_std:.2f}',       # Should be > 1.0
                         'lr': f'{lr:.2e}',
                         'step': self.global_step,
                     })
 
                     if self.use_wandb:
                         self.wandb.log({
-                            "train/loss": accumulation_loss,
+                            "train/loss": avg_loss,
                             "train/learning_rate": lr,
                             "train/epoch": self.epoch,
+                            "adapter/similarity": avg_similarity,
+                            "adapter/output_std": output_std,
+                            "adapter/output_norm": output_norm,
                         }, step=self.global_step)
 
+                    # Reset both tracking variables
                     accumulation_loss = 0.0
+                    original_losses = []
 
                 # Evaluation
                 if self.global_step % self.config.eval_steps == 0:
