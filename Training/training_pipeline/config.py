@@ -28,8 +28,8 @@ class TrainingConfig:
 
     # Contrastive Loss Configuration
     use_contrastive_loss: bool = True
-    contrastive_weight: float = 0.1       # Weight for contrastive loss
-    contrastive_temperature: float = 0.07  # InfoNCE temperature
+    contrastive_weight: float = 0.01       # Weight for contrastive loss
+    contrastive_temperature: float = 0.2  # InfoNCE temperature
 
     # Training Hyperparameters
     learning_rate: float = 2e-4   # INCREASED from 1e-4 for faster learning
