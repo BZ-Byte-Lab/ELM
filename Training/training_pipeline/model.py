@@ -153,6 +153,9 @@ class ELMModel(nn.Module):
         token_embeds = self.token_embedding(input_ids)  # (batch, seq_len, hidden_dim)
 
         # Step 2: Transform external embeddings through trainable E_A
+        # Convert embeddings to adapter dtype to prevent mismatch
+        adapter_dtype = next(self.adapter.parameters()).dtype
+        embeddings = embeddings.to(adapter_dtype)
         adapted_embeds = self.adapter(embeddings)  # (batch, embedding_dim)
 
         # Ensure adapted embeddings match token embeddings dtype
@@ -188,6 +191,9 @@ class ELMModel(nn.Module):
         Returns:
             Adapter outputs (batch_size, embedding_dim)
         """
+        # Convert embeddings to adapter dtype to prevent mismatch
+        adapter_dtype = next(self.adapter.parameters()).dtype
+        embeddings = embeddings.to(adapter_dtype)
         return self.adapter(embeddings)
 
     @torch.no_grad()
@@ -217,6 +223,9 @@ class ELMModel(nn.Module):
 
         # Get and modify embeddings
         token_embeds = self.token_embedding(input_ids)
+        # Convert embeddings to adapter dtype to prevent mismatch
+        adapter_dtype = next(self.adapter.parameters()).dtype
+        embeddings = embeddings.to(adapter_dtype)
         adapted_embeds = self.adapter(embeddings)
 
         for i in range(batch_size):

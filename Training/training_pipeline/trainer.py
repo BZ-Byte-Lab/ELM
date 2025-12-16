@@ -337,6 +337,9 @@ class ELMTrainer:
                     # Compute adapter variance metrics
                     with torch.no_grad():
                         sample_embeds = batch["embeddings"][:min(8, len(batch["embeddings"]))]
+                        # Convert embeddings to adapter dtype to prevent mismatch
+                        adapter_dtype = next(self.model.adapter.parameters()).dtype
+                        sample_embeds = sample_embeds.to(adapter_dtype)
                         adapter_out = self.model.adapter(sample_embeds)
 
                         # Normalize and compute similarity
