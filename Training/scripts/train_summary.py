@@ -329,53 +329,72 @@ def evaluate_with_bertscore(
                 for k, v in batch.items()
             }
 
-            # Generate summary
+            # Generate summary with safer parameters
+            # Get vocabulary size and exclude problematic tokens
+            vocab_size = trainer.model.tokenizer.vocab_size
+            # Exclude problematic token 151642 (⽗) and edge tokens
+            safe_vocab_size = vocab_size - 2  # Keep some margin from edge
+
             generated_ids = trainer.model.generate(
                 input_ids=batch["input_ids"],
                 attention_mask=batch["attention_mask"],
                 embeddings=batch["embeddings"],
                 embedding_positions=batch["embedding_positions"],
-                max_new_tokens=150,
-                min_new_tokens=20,
+                max_new_tokens=100,        # Shorter generations
+                min_new_tokens=5,          # Lower minimum
                 do_sample=True,
-                temperature=0.7,
-                top_p=0.9,
-                repetition_penalty=1.2,
+                temperature=0.8,           # Slightly higher for creativity
+                top_p=0.95,                # More inclusive
+                top_k=50,                  # Add top-k sampling
+                repetition_penalty=1.1,    # Less aggressive
+                no_repeat_ngram_size=3,    # Prevent 3-gram repetitions
+                early_stopping=True,       # Stop at EOS
                 pad_token_id=trainer.model.tokenizer.pad_token_id,
                 eos_token_id=trainer.model.tokenizer.eos_token_id,
-                # Add constraints to prevent invalid tokens
-                bad_words_ids=None,
-                forced_eos_token_id=None,
+                # Prevent problematic tokens
+                bad_words_ids=[[151642]],  # Block the ⽗ token
                 remove_invalid_values=True,
             )
 
-            # Clamp generated_ids to valid vocabulary range to prevent overflow
+            # Post-process generated tokens
             vocab_size = trainer.model.tokenizer.vocab_size
-            generated_ids = torch.clamp(generated_ids, 0, vocab_size - 1)
+            # More aggressive clamping to avoid edge tokens
+            generated_ids = torch.clamp(generated_ids, 0, vocab_size - 10)
+            # Filter out any remaining problematic tokens
+            generated_ids[generated_ids >= 151640] = trainer.model.tokenizer.pad_token_id
 
             # Decode predictions and references
-            # Only decode the newly generated tokens (excluding input)
             batch_predictions = []
             for i in range(generated_ids.shape[0]):
-                # Find where the new tokens start (after the input sequence)
+                # Find where the new tokens start
                 input_length = batch["attention_mask"][i].sum().item()
                 new_tokens = generated_ids[i][input_length:]
 
-                # Remove any padding or eos tokens from the middle
-                if trainer.model.tokenizer.eos_token_id in new_tokens:
-                    eos_index = (new_tokens == trainer.model.tokenizer.eos_token_id).nonzero(as_tuple=True)[0]
-                    if len(eos_index) > 0:
-                        new_tokens = new_tokens[:eos_index[0]]
+                # Find EOS token and truncate
+                eos_positions = (new_tokens == trainer.model.tokenizer.eos_token_id).nonzero(as_tuple=True)[0]
+                if len(eos_positions) > 0:
+                    new_tokens = new_tokens[:eos_positions[0]]
 
-                # Decode only the new tokens
+                # Remove padding tokens
+                new_tokens = new_tokens[new_tokens != trainer.model.tokenizer.pad_token_id]
+
+                # Final safety check
+                new_tokens = torch.clamp(new_tokens, 0, min(vocab_size - 10, 151630))
+
+                # Decode with error handling
                 try:
                     pred = trainer.model.tokenizer.decode(new_tokens, skip_special_tokens=True)
-                except (OverflowError, ValueError) as e:
-                    # Fallback: replace any problematic tokens
-                    pred = trainer.model.tokenizer.decode(
-                        torch.clamp(new_tokens, 0, trainer.model.tokenizer.vocab_size - 1),
-                        skip_special_tokens=True
-                    )
+                    # Post-process decoded text
+                    # Remove any repeated single characters more than 3 times
+                    pred = ''.join([c*3 if len(list(g)) > 3 and len(set(list(g))) == 1 else g
+                                   for g in pred.split(' ')])
+                    # Ensure it's not empty or too short
+                    if len(pred.strip()) < 3:
+                        pred = "Unable to generate summary."
+                except Exception as e:
+                    logger.warning(f"Decoding error: {e}")
+                    pred = "Decoding error occurred."
+
                 batch_predictions.append(pred)
 
             # For references, we need to handle -100 padding tokens

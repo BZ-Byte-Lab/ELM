@@ -1,0 +1,15 @@
+{
+  "status": "Under-trained",
+  "current_bertscore": 0.0831,
+  "target_bertscore": 0.7,
+  "issues": [
+    "Small validation set",
+    "Insufficient training steps",
+    "Token generation issues"
+  ],
+  "recommendations": [
+    "Increase max_steps to 2000-3000",
+    "Lower learning rate to 5e-5",
+    "Monitor generation quality"
+  ]
+}
