@@ -342,6 +342,9 @@ def evaluate_with_bertscore(
             # Filter generated_ids to only include valid token IDs
             vocab_size = trainer.model.tokenizer.vocab_size
             filtered_generated = generated_ids.clone()
+
+            # Filter out invalid token IDs (negative or too large)
+            filtered_generated[filtered_generated < 0] = trainer.model.tokenizer.pad_token_id
             filtered_generated[filtered_generated >= vocab_size] = trainer.model.tokenizer.pad_token_id
 
             batch_predictions = trainer.model.tokenizer.batch_decode(
@@ -350,6 +353,10 @@ def evaluate_with_bertscore(
 
             # Also filter labels to prevent any potential issues
             filtered_labels = batch["labels"].clone()
+
+            # Filter out invalid token IDs (negative or too large)
+            # Handle -100 (ignore index) and other negative values
+            filtered_labels[filtered_labels < 0] = trainer.model.tokenizer.pad_token_id
             filtered_labels[filtered_labels >= vocab_size] = trainer.model.tokenizer.pad_token_id
 
             batch_references = trainer.model.tokenizer.batch_decode(

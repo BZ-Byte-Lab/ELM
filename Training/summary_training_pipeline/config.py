@@ -38,7 +38,7 @@ class SummaryTrainingConfig:
 
     # Training Hyperparameters
     learning_rate: float = 2e-4   # INCREASED from 1e-4 for faster learning
-    warmup_steps: int = 500       # DECREASED from 1000 (better init needs less warmup)
+    warmup_steps: int = 100       # DECREASED from 500 (faster training, less warmup needed)
     weight_decay: float = 0.02    # INCREASED from 0.01 for stronger regularization
     max_grad_norm: float = 1.0
 
