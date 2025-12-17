@@ -86,6 +86,7 @@ class BERTScoreEvaluator:
                 model_type=self.model_name,
                 batch_size=self.batch_size,
                 rescale_with_baseline=self.rescale,
+                lang="en",  # Specify language for baseline rescaling
                 verbose=verbose
             )
 

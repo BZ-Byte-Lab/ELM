@@ -5,12 +5,16 @@ This script uses the summary_training_pipeline for training only on summary task
 with enhanced BERTScore evaluation and early stopping based on validation BERTScore.
 """
 
+import os
 import argparse
 import logging
 import sys
 from pathlib import Path
 import torch
 import wandb
+
+# Set environment variable to avoid tokenizer parallelism warning
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # Add paths for modules
 sys.path.append(str(Path(__file__).parent.parent))
@@ -101,7 +105,7 @@ def parse_args():
     parser.add_argument(
         "--contrastive-weight",
         type=float,
-        default=0.01,
+        default=0.03,
         help="Weight for contrastive loss"
     )
     parser.add_argument(
@@ -113,7 +117,7 @@ def parse_args():
     parser.add_argument(
         "--drift-weight",
         type=float,
-        default=0.03,
+        default=0.07,
         help="Weight for text drift loss"
     )
     parser.add_argument(
@@ -147,7 +151,7 @@ def parse_args():
     parser.add_argument(
         "--bertscore-batch-size",
         type=int,
-        default=16,
+        default=8,
         help="BERTScore computation batch size"
     )
 
@@ -333,8 +337,6 @@ def evaluate_with_bertscore(
                 embedding_positions=batch["embedding_positions"],
                 max_new_tokens=150,  # Reasonable length for summaries
                 do_sample=False,     # Deterministic generation
-                temperature=1.0,
-                top_p=1.0,
                 pad_token_id=trainer.model.tokenizer.pad_token_id,
             )
 
