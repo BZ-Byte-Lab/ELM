@@ -151,7 +151,7 @@ def parse_args():
     parser.add_argument(
         "--bertscore-batch-size",
         type=int,
-        default=8,
+        default=16,
         help="BERTScore computation batch size"
     )
 
@@ -465,8 +465,17 @@ def main():
                 patience_counter = 0
 
                 # Save best model
-                best_checkpoint_path = config.checkpoints_dir / "best_summary_model.safetensors"
-                trainer._save_checkpoint(best_checkpoint_path, epoch, total_steps)
+                best_checkpoint_path = config.checkpoints_dir / "adapter_best.safetensors"
+                trainer.checkpoint_manager.save(
+                    adapter=trainer.model.adapter,
+                    optimizer=trainer.optimizer,
+                    scheduler=trainer.scheduler,
+                    global_step=total_steps,
+                    epoch=epoch,
+                    best_val_loss=0.0,  # Not using loss for early stopping
+                    checkpoint_path=best_checkpoint_path,
+                    device=str(trainer.device)
+                )
                 logger.info(f"New best BERTScore: {best_bertscore:.4f} - saved checkpoint")
 
             else:
