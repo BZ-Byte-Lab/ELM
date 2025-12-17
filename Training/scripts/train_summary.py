@@ -464,17 +464,12 @@ def main():
                 best_bertscore = current_bertscore
                 patience_counter = 0
 
-                # Save best model
-                best_checkpoint_path = config.checkpoints_dir / "adapter_best.safetensors"
-                trainer.checkpoint_manager.save(
+                # Save best model (using BERTScore as the metric)
+                trainer.checkpoint_manager.save_best(
                     adapter=trainer.model.adapter,
-                    optimizer=trainer.optimizer,
-                    scheduler=trainer.scheduler,
+                    val_loss=current_bertscore,  # Use BERTScore instead of val_loss
                     global_step=total_steps,
-                    epoch=epoch,
-                    best_val_loss=0.0,  # Not using loss for early stopping
-                    checkpoint_path=best_checkpoint_path,
-                    device=str(trainer.device)
+                    epoch=epoch
                 )
                 logger.info(f"New best BERTScore: {best_bertscore:.4f} - saved checkpoint")
 
