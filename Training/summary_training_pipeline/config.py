@@ -48,7 +48,7 @@ class SummaryTrainingConfig:
 
     # Training Schedule (Summary-Only with 2-epoch constraint)
     summary_only: bool = True                    # Always true for summary pipeline
-    summary_data_path: str = "data/summary_filtered"
+    summary_data_path: str = "data/summary_clean"
     max_epochs: int = 2                          # Fixed 2-epoch constraint for Bayesian optimization
     max_steps: Optional[int] = None
     eval_steps: int = 250         # DECREASED from 500 for earlier collapse detection
@@ -99,7 +99,8 @@ class SummaryTrainingConfig:
         Returns:
             Path to the JSONL file
         """
-        return self.synthesis_dir / f"{split}_synthesis.jsonl"
+        # Use clean splits for summary data
+        return self.synthesis_dir / f"{split}_synthesis_clean.jsonl"
 
     def get_embeddings_path(self, split: str) -> Path:
         """Get path to embeddings file for a given split.
