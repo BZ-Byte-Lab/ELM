@@ -336,22 +336,56 @@ def evaluate_with_bertscore(
                 embeddings=batch["embeddings"],
                 embedding_positions=batch["embedding_positions"],
                 max_new_tokens=150,
-                min_new_tokens=50,
+                min_new_tokens=20,
                 do_sample=True,
                 temperature=0.7,
                 top_p=0.9,
                 repetition_penalty=1.2,
                 pad_token_id=trainer.model.tokenizer.pad_token_id,
                 eos_token_id=trainer.model.tokenizer.eos_token_id,
+                # Add constraints to prevent invalid tokens
+                bad_words_ids=None,
+                forced_eos_token_id=None,
+                remove_invalid_values=True,
             )
 
+            # Clamp generated_ids to valid vocabulary range to prevent overflow
+            vocab_size = trainer.model.tokenizer.vocab_size
+            generated_ids = torch.clamp(generated_ids, 0, vocab_size - 1)
+
             # Decode predictions and references
-            batch_predictions = trainer.model.tokenizer.batch_decode(
-                generated_ids, skip_special_tokens=True
-            )
-            batch_references = trainer.model.tokenizer.batch_decode(
-                batch["labels"], skip_special_tokens=True
-            )
+            # Only decode the newly generated tokens (excluding input)
+            batch_predictions = []
+            for i in range(generated_ids.shape[0]):
+                # Find where the new tokens start (after the input sequence)
+                input_length = batch["attention_mask"][i].sum().item()
+                new_tokens = generated_ids[i][input_length:]
+
+                # Remove any padding or eos tokens from the middle
+                if trainer.model.tokenizer.eos_token_id in new_tokens:
+                    eos_index = (new_tokens == trainer.model.tokenizer.eos_token_id).nonzero(as_tuple=True)[0]
+                    if len(eos_index) > 0:
+                        new_tokens = new_tokens[:eos_index[0]]
+
+                # Decode only the new tokens
+                try:
+                    pred = trainer.model.tokenizer.decode(new_tokens, skip_special_tokens=True)
+                except (OverflowError, ValueError) as e:
+                    # Fallback: replace any problematic tokens
+                    pred = trainer.model.tokenizer.decode(
+                        torch.clamp(new_tokens, 0, trainer.model.tokenizer.vocab_size - 1),
+                        skip_special_tokens=True
+                    )
+                batch_predictions.append(pred)
+
+            # For references, we need to handle -100 padding tokens
+            batch_references = []
+            for i in range(batch["labels"].shape[0]):
+                labels = batch["labels"][i]
+                # Replace -100 with pad_token_id for decoding
+                labels[labels == -100] = trainer.model.tokenizer.pad_token_id
+                ref = trainer.model.tokenizer.decode(labels, skip_special_tokens=True)
+                batch_references.append(ref)
 
             predictions.extend(batch_predictions)
             references.extend(batch_references)

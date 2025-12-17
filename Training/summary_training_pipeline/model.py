@@ -242,7 +242,9 @@ class ELMModel(nn.Module):
                 token_embeds[i, pos] = adapted_embeds[i]
 
         # Generate
+        # Note: When using inputs_embeds, we need to pass input_ids to ensure proper token range
         return self.llm.generate(
+            input_ids=input_ids,
             inputs_embeds=token_embeds,
             attention_mask=attention_mask,
             max_new_tokens=max_new_tokens,
