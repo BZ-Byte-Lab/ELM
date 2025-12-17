@@ -28,7 +28,7 @@ class SummaryTrainingConfig:
 
     # Contrastive Loss Configuration
     use_contrastive_loss: bool = True
-    contrastive_weight: float = 0.01       # Weight for contrastive loss
+    contrastive_weight: float = 0.003      # REDUCED from 0.01 to prevent over-optimization
     contrastive_temperature: float = 0.2  # InfoNCE temperature
 
     # Text Drift Loss Configuration (for Bayesian Optimization)
@@ -37,8 +37,8 @@ class SummaryTrainingConfig:
     text_drift_target_similarity: float = 0.75  # Target cosine similarity (0.7 to 0.9 in BO)
 
     # Training Hyperparameters
-    learning_rate: float = 2e-4   # INCREASED from 1e-4 for faster learning
-    warmup_steps: int = 100       # DECREASED from 500 (faster training, less warmup needed)
+    learning_rate: float = 1e-4   # REDUCED from 2e-4 for more stable training
+    warmup_steps: int = 200       # INCREASED from 100 for smoother warmup
     weight_decay: float = 0.02    # INCREASED from 0.01 for stronger regularization
     max_grad_norm: float = 1.0
 

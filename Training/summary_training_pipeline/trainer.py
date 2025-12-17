@@ -439,16 +439,18 @@ class ELMTrainer:
                             "val/loss": val_loss,
                         }, step=self.global_step)
 
-                    # Save best model
+                    # Skip saving based on validation loss - we only save based on BERTScore
+                    # This prevents conflicts with BERTScore-based model selection
                     if val_loss < self.best_val_loss:
                         self.best_val_loss = val_loss
-                        logger.info(f"New best model! Saving...")
-                        self.checkpoint_manager.save_best(
-                            adapter=self.model.adapter,
-                            val_loss=val_loss,
-                            global_step=self.global_step,
-                            epoch=self.epoch,
-                        )
+                        logger.info(f"New best val_loss: {val_loss:.4f} (not saving - BERTScore-based selection only)")
+                        # Commented out to avoid conflicts with BERTScore-based saving
+                        # self.checkpoint_manager.save_best(
+                        #     adapter=self.model.adapter,
+                        #     val_loss=val_loss,
+                        #     global_step=self.global_step,
+                        #     epoch=self.epoch,
+                        # )
 
                     self.model.train()
 

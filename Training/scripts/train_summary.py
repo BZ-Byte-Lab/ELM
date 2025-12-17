@@ -45,7 +45,7 @@ def parse_args():
     parser.add_argument(
         "--data-dir",
         type=Path,
-        default=Path("data/summary_filtered"),
+        default=Path("data/summary_clean"),
         help="Directory containing summary-only data"
     )
 
@@ -99,7 +99,7 @@ def parse_args():
     parser.add_argument(
         "--use-contrastive",
         action="store_true",
-        default=True,
+        default=False,
         help="Use contrastive loss"
     )
     parser.add_argument(
@@ -111,7 +111,7 @@ def parse_args():
     parser.add_argument(
         "--use-drift-loss",
         action="store_true",
-        default=True,
+        default=False,
         help="Use text drift loss"
     )
     parser.add_argument(
@@ -335,34 +335,22 @@ def evaluate_with_bertscore(
                 attention_mask=batch["attention_mask"],
                 embeddings=batch["embeddings"],
                 embedding_positions=batch["embedding_positions"],
-                max_new_tokens=150,  # Reasonable length for summaries
-                do_sample=False,     # Deterministic generation
+                max_new_tokens=150,
+                min_new_tokens=50,
+                do_sample=True,
+                temperature=0.7,
+                top_p=0.9,
+                repetition_penalty=1.2,
                 pad_token_id=trainer.model.tokenizer.pad_token_id,
+                eos_token_id=trainer.model.tokenizer.eos_token_id,
             )
 
             # Decode predictions and references
-            # Filter generated_ids to only include valid token IDs
-            vocab_size = trainer.model.tokenizer.vocab_size
-            filtered_generated = generated_ids.clone()
-
-            # Filter out invalid token IDs (negative or too large)
-            filtered_generated[filtered_generated < 0] = trainer.model.tokenizer.pad_token_id
-            filtered_generated[filtered_generated >= vocab_size] = trainer.model.tokenizer.pad_token_id
-
             batch_predictions = trainer.model.tokenizer.batch_decode(
-                filtered_generated, skip_special_tokens=True
+                generated_ids, skip_special_tokens=True
             )
-
-            # Also filter labels to prevent any potential issues
-            filtered_labels = batch["labels"].clone()
-
-            # Filter out invalid token IDs (negative or too large)
-            # Handle -100 (ignore index) and other negative values
-            filtered_labels[filtered_labels < 0] = trainer.model.tokenizer.pad_token_id
-            filtered_labels[filtered_labels >= vocab_size] = trainer.model.tokenizer.pad_token_id
-
             batch_references = trainer.model.tokenizer.batch_decode(
-                filtered_labels, skip_special_tokens=True
+                batch["labels"], skip_special_tokens=True
             )
 
             predictions.extend(batch_predictions)
@@ -376,6 +364,21 @@ def evaluate_with_bertscore(
     logger.info(f"  Recall: {bertscore_metrics['bertscore_recall']:.4f}")
     logger.info(f"  F1: {bertscore_metrics['bertscore_f1']:.4f}")
     logger.info(f"  Composite: {bertscore_metrics['bertscore_composite']:.4f}")
+
+    # Additional diagnostics for low BERTScore
+    if bertscore_metrics.get('empty_prediction_rate', 0) > 0.1:
+        logger.warning(f"High empty prediction rate: {bertscore_metrics['empty_prediction_rate']:.2%}")
+    if bertscore_metrics.get('short_prediction_rate', 0) > 0.5:
+        logger.warning(f"High short prediction rate: {bertscore_metrics['short_prediction_rate']:.2%}")
+    if bertscore_metrics.get('avg_unique_token_ratio', 1.0) < 0.3:
+        logger.warning(f"High repetition detected: {bertscore_metrics['avg_unique_token_ratio']:.2f} unique ratio")
+
+    # Log some sample predictions for debugging
+    logger.info("Sample predictions for debugging:")
+    for i in range(min(3, len(predictions))):
+        logger.info(f"  Pred {i+1}: {predictions[i][:150]}...")
+        logger.info(f"  Ref {i+1}:  {references[i][:150]}...")
+        logger.info("")
 
     return bertscore_metrics
 

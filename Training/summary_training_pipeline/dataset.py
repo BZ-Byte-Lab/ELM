@@ -41,11 +41,30 @@ class ELMTrainingDataset(Dataset):
         self.synthesis_path = synthesis_path
         self.embeddings_path = embeddings_path
 
-        # Load embeddings
-        logger.info(f"Loading embeddings from {embeddings_path}")
-        tensors = load_file(str(embeddings_path))
-        self.embeddings = tensors["embeddings"]  # (num_samples, 2560)
-        logger.info(f"Loaded embeddings shape: {self.embeddings.shape}")
+        # Check for normalized embeddings first
+        normalized_path = embeddings_path.parent / "normalized" / embeddings_path.name
+        if normalized_path.exists():
+            logger.info(f"Loading normalized embeddings from {normalized_path}")
+            tensors = load_file(str(normalized_path))
+            self.embeddings = tensors["embeddings"]  # (num_samples, 2560)
+            logger.info(f"Loaded normalized embeddings shape: {self.embeddings.shape}")
+        else:
+            # Load regular embeddings and normalize them
+            logger.info(f"Loading embeddings from {embeddings_path}")
+            tensors = load_file(str(embeddings_path))
+            embeddings = tensors["embeddings"].astype(np.float32)  # (num_samples, 2560)
+
+            # Normalize embeddings
+            import torch
+            embeddings_tensor = torch.from_numpy(embeddings)
+            norms = torch.norm(embeddings_tensor, p=2, dim=1, keepdim=True)
+            # Avoid division by zero
+            norms = torch.clamp(norms, min=1e-8)
+            embeddings_tensor = embeddings_tensor / norms
+
+            self.embeddings = embeddings_tensor.numpy()
+            logger.info(f"Loaded and normalized embeddings shape: {self.embeddings.shape}")
+            logger.info(f"Embedding stats - mean: {self.embeddings.mean():.6f}, std: {self.embeddings.std():.6f}")
 
         # Load synthesis data
         logger.info(f"Loading synthesis data from {synthesis_path}")
@@ -66,12 +85,14 @@ class ELMTrainingDataset(Dataset):
         return samples
 
     def _validate_data(self):
-        """Validate that all embedding indices are within bounds."""
+        """Validate embedding indices and log data integrity statistics."""
         max_idx = len(self.embeddings)
         invalid_count = 0
+        embedding_indices = set()
 
         for i, sample in enumerate(self.samples):
             idx = sample["embedding_index"]
+            embedding_indices.add(idx)
             if idx < 0 or idx >= max_idx:
                 logger.warning(
                     f"Sample {i} has invalid embedding_index {idx} "
@@ -81,6 +102,26 @@ class ELMTrainingDataset(Dataset):
 
         if invalid_count > 0:
             logger.warning(f"Found {invalid_count} samples with invalid indices")
+
+        # Log unique embedding statistics
+        logger.info(f"Dataset statistics:")
+        logger.info(f"  Total samples: {len(self.samples)}")
+        logger.info(f"  Unique embedding indices: {len(embedding_indices)}")
+        logger.info(f"  Embedding shape: {self.embeddings.shape}")
+        logger.info(f"  Embedding norm stats - mean: {np.linalg.norm(self.embeddings, axis=1).mean():.6f}, "
+                   f"std: {np.linalg.norm(self.embeddings, axis=1).std():.6f}")
+        logger.info(f"  Embedding value stats - mean: {self.embeddings.mean():.6f}, "
+                   f"std: {self.embeddings.std():.6f}, "
+                   f"min: {self.embeddings.min():.6f}, "
+                   f"max: {self.embeddings.max():.6f}")
+
+        # Check if we're using normalized embeddings
+        norms = np.linalg.norm(self.embeddings, axis=1)
+        is_normalized = np.allclose(norms, np.ones_like(norms), rtol=1e-5, atol=1e-6)
+        if is_normalized:
+            logger.info("✓ Using normalized embeddings (all norms ≈ 1.0)")
+        else:
+            logger.warning("⚠ Using non-normalized embeddings")
 
     def __len__(self) -> int:
         return len(self.samples)
