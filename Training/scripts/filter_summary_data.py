@@ -45,9 +45,9 @@ def filter_summary_data(
     original_embeddings = load_embeddings(input_embeddings)
     print(f"Original embeddings shape: {original_embeddings.shape}")
 
-    # Track summary entries and their indices
+    # Track summary entries and their embedding indices
     summary_entries = []
-    summary_indices = []
+    summary_embedding_indices = []
 
     # First pass: identify summary entries
     print(f"Scanning {input_jsonl} for summary tasks...")
@@ -57,7 +57,13 @@ def filter_summary_data(
                 data = json.loads(line.strip())
                 if data.get('task_type') == 'summary':
                     summary_entries.append(data)
-                    summary_indices.append(i)
+                    # Use the embedding_index from the data, not the line number
+                    embedding_idx = data.get('embedding_index')
+                    if embedding_idx is not None:
+                        summary_embedding_indices.append(embedding_idx)
+                    else:
+                        print(f"Warning: Line {i} has no embedding_index, skipping")
+                        continue
             except json.JSONDecodeError as e:
                 print(f"Warning: Skipping invalid JSON at line {i}: {e}")
                 continue
@@ -72,8 +78,8 @@ def filter_summary_data(
         print("Warning: No summary entries found!")
         return total_entries, 0, []
 
-    # Filter embeddings based on summary indices
-    summary_embeddings = original_embeddings[summary_indices]
+    # Filter embeddings based on summary embedding indices
+    summary_embeddings = original_embeddings[summary_embedding_indices]
     print(f"Summary embeddings shape: {summary_embeddings.shape}")
 
     # Update embedding indices in the filtered data
@@ -104,7 +110,7 @@ def filter_summary_data(
     from safetensors.torch import save_file
     save_file(filtered_embeddings_dict, str(output_embeddings))
 
-    return total_entries, summary_count, summary_indices
+    return total_entries, summary_count, summary_embedding_indices
 
 
 def create_train_val_splits(
@@ -202,7 +208,7 @@ def main():
     parser.add_argument(
         "--input-dir",
         type=Path,
-        default=Path("data/synthesis"),
+        default=Path("/home/benz/coding_project/elm/data/synthesis"),
         help="Directory containing multi-task synthesis JSONL files"
     )
     parser.add_argument(

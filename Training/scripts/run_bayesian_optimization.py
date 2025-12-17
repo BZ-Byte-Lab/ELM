@@ -15,16 +15,23 @@ import torch
 import optuna
 from typing import Dict, Any, Optional
 
-# Add paths
+# Add paths for modules
+sys.path.append(str(Path(__file__).parent.parent))
 sys.path.append(str(Path(__file__).parent.parent / "summary_training_pipeline"))
 sys.path.append(str(Path(__file__).parent.parent / "optimization"))
 
-from summary_training_pipeline.config import SummaryTrainingConfig
-from summary_training_pipeline.trainer import ELMTrainer
-from summary_training_pipeline.dataset import ELMTrainingDataset
-from summary_training_pipeline.utils import setup_logging
-from optimization.bayesian_optimizer import BayesianOptimizer, create_optimizer
-from optimization.bertscore_metrics import create_evaluator
+try:
+    from summary_training_pipeline.config import SummaryTrainingConfig
+    from summary_training_pipeline.trainer import ELMTrainer
+    from summary_training_pipeline.dataset import ELMTrainingDataset
+    from summary_training_pipeline.utils import setup_logging
+    from optimization.bayesian_optimizer import BayesianOptimizer, create_optimizer
+    from optimization.bertscore_metrics import create_evaluator
+except ImportError as e:
+    print(f"Import error: {e}")
+    print("Make sure you're running from the Training directory:")
+    print("cd Training && python scripts/run_bayesian_optimization.py ...")
+    sys.exit(1)
 
 # Set up logging
 logger = logging.getLogger(__name__)

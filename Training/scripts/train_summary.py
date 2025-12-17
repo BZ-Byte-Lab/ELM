@@ -12,14 +12,22 @@ from pathlib import Path
 import torch
 import wandb
 
-# Add training pipeline to path
+# Add paths for modules
+sys.path.append(str(Path(__file__).parent.parent))
 sys.path.append(str(Path(__file__).parent.parent / "summary_training_pipeline"))
+sys.path.append(str(Path(__file__).parent.parent / "optimization"))
 
-from summary_training_pipeline.config import SummaryTrainingConfig
-from summary_training_pipeline.trainer import ELMTrainer
-from summary_training_pipeline.dataset import ELMTrainingDataset, TrainingCollator
-from summary_training_pipeline.utils import setup_logging
-from optimization.bertscore_metrics import create_evaluator
+try:
+    from summary_training_pipeline.config import SummaryTrainingConfig
+    from summary_training_pipeline.trainer import ELMTrainer
+    from summary_training_pipeline.dataset import ELMTrainingDataset, TrainingCollator
+    from summary_training_pipeline.utils import setup_logging
+    from optimization.bertscore_metrics import create_evaluator
+except ImportError as e:
+    print(f"Import error: {e}")
+    print("Make sure you're running from the Training directory:")
+    print("cd Training && python scripts/train_summary.py ...")
+    sys.exit(1)
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -252,7 +260,12 @@ def create_config(args) -> SummaryTrainingConfig:
     config.bertscore_batch_size = args.bertscore_batch_size
 
     # Data configuration
-    config.summary_data_path = str(args.data_dir)
+    # Convert data_dir to absolute path relative to project root
+    project_root = Path(__file__).parent.parent.parent
+    data_path = project_root / args.data_dir
+    config.summary_data_path = str(data_path)
+    # Initialize paths after setting summary_data_path
+    config.__post_init__()
 
     # Logging configuration
     config.logging_steps = args.log_interval
@@ -326,11 +339,21 @@ def evaluate_with_bertscore(
             )
 
             # Decode predictions and references
+            # Filter generated_ids to only include valid token IDs
+            vocab_size = trainer.model.tokenizer.vocab_size
+            filtered_generated = generated_ids.clone()
+            filtered_generated[filtered_generated >= vocab_size] = trainer.model.tokenizer.pad_token_id
+
             batch_predictions = trainer.model.tokenizer.batch_decode(
-                generated_ids, skip_special_tokens=True
+                filtered_generated, skip_special_tokens=True
             )
+
+            # Also filter labels to prevent any potential issues
+            filtered_labels = batch["labels"].clone()
+            filtered_labels[filtered_labels >= vocab_size] = trainer.model.tokenizer.pad_token_id
+
             batch_references = trainer.model.tokenizer.batch_decode(
-                batch["labels"], skip_special_tokens=True
+                filtered_labels, skip_special_tokens=True
             )
 
             predictions.extend(batch_predictions)
@@ -398,6 +421,9 @@ def main():
 
         logger.info(f"Training {steps_per_epoch} steps per epoch for {config.max_epochs} epochs")
         logger.info(f"Total steps: {total_steps}")
+
+        # Create scheduler manually since we're not using trainer.train()
+        trainer._create_scheduler(total_steps)
 
         # Training epochs
         for epoch in range(config.max_epochs):

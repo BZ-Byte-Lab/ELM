@@ -83,7 +83,7 @@ class SummaryTrainingConfig:
         """Initialize derived paths."""
         self.data_dir = self.base_dir / "data"
         self.embeddings_dir = Path(self.summary_data_path) / "embeddings"
-        self.synthesis_dir = Path(self.summary_data_path) / "synthesis"
+        self.synthesis_dir = Path(self.summary_data_path)  # Directories are directly in summary_data_path
         self.checkpoints_dir = self.data_dir / "checkpoints"
 
     def create_directories(self):
