@@ -1,4 +1,4 @@
-"""Configuration for ELM adapter training."""
+"""Configuration for ELM summary-only adapter training."""
 
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -6,8 +6,8 @@ from typing import Optional
 
 
 @dataclass
-class TrainingConfig:
-    """Configuration for the ELM adapter training pipeline."""
+class SummaryTrainingConfig:
+    """Configuration for the ELM summary-only adapter training pipeline."""
 
     # Paths
     base_dir: Path = field(default_factory=lambda: Path(__file__).parent.parent.parent)
@@ -31,6 +31,11 @@ class TrainingConfig:
     contrastive_weight: float = 0.01       # Weight for contrastive loss
     contrastive_temperature: float = 0.2  # InfoNCE temperature
 
+    # Text Drift Loss Configuration (for Bayesian Optimization)
+    use_text_drift_loss: bool = True         # Always enabled for summary tasks
+    text_drift_weight: float = 0.03         # Starting weight (0.01 to 0.1 in BO)
+    text_drift_target_similarity: float = 0.75  # Target cosine similarity (0.7 to 0.9 in BO)
+
     # Training Hyperparameters
     learning_rate: float = 2e-4   # INCREASED from 1e-4 for faster learning
     warmup_steps: int = 500       # DECREASED from 1000 (better init needs less warmup)
@@ -41,8 +46,10 @@ class TrainingConfig:
     batch_size: int = 8                          # DECREASED from 16
     gradient_accumulation_steps: int = 4         # INCREASED from 2 (effective batch = 32)
 
-    # Training Schedule
-    num_epochs: int = 3
+    # Training Schedule (Summary-Only with 2-epoch constraint)
+    summary_only: bool = True                    # Always true for summary pipeline
+    summary_data_path: str = "data/summary_filtered"
+    max_epochs: int = 2                          # Fixed 2-epoch constraint for Bayesian optimization
     max_steps: Optional[int] = None
     eval_steps: int = 250         # DECREASED from 500 for earlier collapse detection
     save_steps: int = 1000
@@ -67,15 +74,16 @@ class TrainingConfig:
     wandb_project: Optional[str] = None
     wandb_run_name: Optional[str] = None
 
-    # Summary-Only Training Configuration
-    summary_only: bool = False                # Enable summary-only training mode
-    summary_data_path: str = "data/summary_filtered"  # Path to filtered summary data
+    # BERTScore Evaluation Configuration
+    bertscore_model: str = "microsoft/deberta-xlarge-mnli"  # High-quality model
+    bertscore_batch_size: int = 16          # Batch size for BERTScore computation
+    bertscore_rescale: bool = True           # Rescale scores to [0, 1]
 
     def __post_init__(self):
         """Initialize derived paths."""
         self.data_dir = self.base_dir / "data"
-        self.embeddings_dir = self.data_dir / "embeddings"
-        self.synthesis_dir = self.data_dir / "synthesis"
+        self.embeddings_dir = Path(self.summary_data_path) / "embeddings"
+        self.synthesis_dir = Path(self.summary_data_path) / "synthesis"
         self.checkpoints_dir = self.data_dir / "checkpoints"
 
     def create_directories(self):
@@ -91,8 +99,6 @@ class TrainingConfig:
         Returns:
             Path to the JSONL file
         """
-        if self.summary_only:
-            return Path(self.summary_data_path) / "synthesis" / f"{split}_synthesis.jsonl"
         return self.synthesis_dir / f"{split}_synthesis.jsonl"
 
     def get_embeddings_path(self, split: str) -> Path:
@@ -104,8 +110,6 @@ class TrainingConfig:
         Returns:
             Path to the safetensors file
         """
-        if self.summary_only:
-            return Path(self.summary_data_path) / "embeddings" / f"{split}_embeddings.safetensors"
         return self.embeddings_dir / f"{split}_embeddings.safetensors"
 
     def get_checkpoint_path(self, step: int) -> Path:
@@ -119,11 +123,14 @@ class TrainingConfig:
     def __repr__(self):
         """Custom representation."""
         return (
-            f"TrainingConfig(\n"
+            f"SummaryTrainingConfig(\n"
             f"  llm={self.llm_model_name},\n"
             f"  adapter_dim={self.embedding_dim}->{self.hidden_dim}->{self.embedding_dim},\n"
             f"  batch_size={self.batch_size} (eff={self.batch_size * self.gradient_accumulation_steps}),\n"
             f"  lr={self.learning_rate},\n"
-            f"  epochs={self.num_epochs}\n"
+            f"  epochs={self.max_epochs},\n"
+            f"  drift_loss={self.use_text_drift_loss},\n"
+            f"  drift_weight={self.text_drift_weight},\n"
+            f"  summary_only={self.summary_only}\n"
             f")"
         )

@@ -1,10 +1,20 @@
 # ELM Training Pipeline
 
-Training pipeline for the ELM (Embedding Language Model) MLP Adapter.
+Training pipeline for the ELM (Embedding Language Model) MLP Adapter with specialized summary-only training and Bayesian optimization.
 
 ## Overview
 
 This module trains a lightweight MLP adapter (~21M parameters) to map Qwen3-Embedding-4B embeddings (2560-dim) into the token embedding space of Qwen3-4B-Instruct. The LLM remains completely frozen during training.
+
+## 🆕 Summary-Only Training Features
+
+**NEW**: Specialized summary-only training pipeline with:
+- **📊 Data Filtering**: Filter summary tasks from multi-task datasets
+- **🔍 Bayesian Optimization**: Hyperparameter tuning with Optuna
+- **🎯 Text Drift Loss**: Cosine similarity-based semantic fidelity
+- **📈 BERTScore Evaluation**: Semantic-aware evaluation metrics
+- **⚡ 2-Epoch Training**: Fast optimization cycles
+- **📊 Enhanced wandb**: Comprehensive experiment tracking
 
 ## Architecture
 
@@ -26,7 +36,7 @@ conda activate elm-training
 
 ```bash
 python scripts/train.py \
-    --batch-size 8 \
+    --batch-size 16 \
     --grad-accum 2 \
     --epochs 3 \
     --lr 1e-4 \
@@ -57,6 +67,46 @@ python scripts/train.py \
     --batch-size 8 \
     --grad-accum 2
 ```
+
+## 🚀 Summary-Only Training
+
+### 1. Filter Summary Data
+```bash
+python scripts/filter_summary_data.py \
+    --input-dir data/synthesis \
+    --input-embeddings-dir data/embeddings \
+    --output-dir data/summary_filtered/synthesis \
+    --output-embeddings-dir data/summary_filtered/embeddings
+```
+
+### 2. Summary Training with BERTScore
+```bash
+python scripts/train_summary.py \
+    --data-dir data/summary_filtered \
+    --epochs 2 \
+    --batch-size 8 \
+    --learning-rate 2e-4 \
+    --use-drift-loss \
+    --drift-weight 0.03 \
+    --wandb \
+    --wandb-project elm-summary
+```
+
+### 3. Bayesian Optimization
+```bash
+python scripts/run_bayesian_optimization.py \
+    --study-name elm-summary-optimization \
+    --trials 50 \
+    --timeout 24 \
+    --project elm-summary-optimization
+```
+
+### Expected Results
+- **BERTScore Composite**: 0.85 - 0.92
+- **Training Time**: 2-3 hours per trial (2 epochs)
+- **Memory Usage**: ~16GB VRAM (batch_size=8)
+
+📖 **Full Documentation**: [Summary Training Guide](docs/summary_training_guide.md) | [wandb Guide](docs/wandb_guide.md)
 
 ## Command Line Arguments
 
